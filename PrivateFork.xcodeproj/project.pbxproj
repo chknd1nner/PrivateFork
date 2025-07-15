@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8B90D1482DEDD44A00FBD189 /* PrivateForkFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 8B90D1472DEDD44A00FBD189 /* PrivateForkFeature */; };
+		3CF87EA72E2716C100414E11 /* PrivateForkFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 3CF87EA62E2716C100414E11 /* PrivateForkFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B90D1482DEDD44A00FBD189 /* PrivateForkFeature in Frameworks */,
+				3CF87EA72E2716C100414E11 /* PrivateForkFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +126,7 @@
 			);
 			name = PrivateFork;
 			packageProductDependencies = (
-				8B90D1472DEDD44A00FBD189 /* PrivateForkFeature */,
+				3CF87EA62E2716C100414E11 /* PrivateForkFeature */,
 			);
 			productName = PrivateFork;
 			productReference = 8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */;
@@ -184,6 +184,9 @@
 			);
 			mainGroup = 8BC265532DEDD3F400F279A4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3CF87EA52E2716A600414E11 /* XCLocalSwiftPackageReference "PrivateForkPackage" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BC2655D2DEDD3F400F279A4 /* Products */;
 			projectDirPath = "";
@@ -322,8 +325,15 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		3CF87EA52E2716A600414E11 /* XCLocalSwiftPackageReference "PrivateForkPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PrivateForkPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		8B90D1472DEDD44A00FBD189 /* PrivateForkFeature */ = {
+		3CF87EA62E2716C100414E11 /* PrivateForkFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PrivateForkFeature;
 		};
