@@ -4,7 +4,7 @@ struct MainView: View {
     @StateObject private var viewModel = MainViewModel()
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 16) {
             HStack {
                 Spacer()
                 Button(action: {
@@ -25,7 +25,7 @@ struct MainView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("Repository URL")
                     .font(.headline)
                     .fontWeight(.medium)
@@ -45,6 +45,37 @@ struct MainView: View {
                             .font(.caption)
                             .foregroundColor(viewModel.isValidURL ? .green : .orange)
                     }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Local Directory")
+                    .font(.headline)
+                    .fontWeight(.medium)
+
+                HStack {
+                    Button(action: {
+                        Task {
+                            await viewModel.selectDirectory()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "folder")
+                            Text("Select Folder")
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Spacer()
+                }
+
+                if viewModel.hasSelectedDirectory {
+                    Text(viewModel.getFormattedPath())
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.top, 4)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

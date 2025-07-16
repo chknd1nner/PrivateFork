@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import AppKit
 
 @MainActor
 final class MainViewModel: ObservableObject {
@@ -7,6 +8,8 @@ final class MainViewModel: ObservableObject {
     @Published var repoURL: String = ""
     @Published var isValidURL: Bool = false
     @Published var urlValidationMessage: String = ""
+    @Published var localPath: String = ""
+    @Published var hasSelectedDirectory: Bool = false
 
     private var debounceTimer: Timer?
 
@@ -94,6 +97,48 @@ final class MainViewModel: ObservableObject {
 
         return .success(())
     }
+
+    func selectDirectory() async -> Result<Void, DirectorySelectionError> {
+        let panel = NSOpenPanel()
+        panel.title = "Select Folder"
+        panel.prompt = "Choose"
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.allowsMultipleSelection = false
+
+        let response = await panel.begin()
+
+        if response == .OK {
+            if let url = panel.url {
+                localPath = url.path
+                hasSelectedDirectory = true
+                return .success(())
+            } else {
+                return .failure(.noURLSelected)
+            }
+        } else {
+            return .failure(.userCancelled)
+        }
+    }
+
+    func getFormattedPath() -> String {
+        if localPath.isEmpty {
+            return "No folder selected"
+        }
+
+        // Format the path for display
+        let url = URL(fileURLWithPath: localPath)
+        let lastComponent = url.lastPathComponent
+        let parentPath = url.deletingLastPathComponent().path
+
+        // Show the last component and parent for context
+        if parentPath == "/" {
+            return lastComponent
+        } else {
+            return "\(parentPath)/\(lastComponent)"
+        }
+    }
 }
 
 enum URLValidationError: Error, LocalizedError {
@@ -112,6 +157,20 @@ enum URLValidationError: Error, LocalizedError {
             return "Please enter a GitHub repository URL"
         case .invalidRepositoryPath:
             return "Invalid repository path. Expected format: github.com/owner/repository"
+        }
+    }
+}
+
+enum DirectorySelectionError: Error, LocalizedError {
+    case userCancelled
+    case noURLSelected
+
+    var errorDescription: String? {
+        switch self {
+        case .userCancelled:
+            return "Directory selection was cancelled"
+        case .noURLSelected:
+            return "No directory was selected"
         }
     }
 }

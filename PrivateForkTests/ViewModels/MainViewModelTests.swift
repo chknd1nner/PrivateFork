@@ -26,6 +26,8 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isValidURL)
         XCTAssertEqual(viewModel.urlValidationMessage, "")
         XCTAssertFalse(viewModel.isShowingSettings)
+        XCTAssertEqual(viewModel.localPath, "")
+        XCTAssertFalse(viewModel.hasSelectedDirectory)
     }
 
     // MARK: - URL Validation Tests
@@ -286,5 +288,108 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isShowingSettings)
+    }
+
+    // MARK: - Directory Selection Tests
+
+    func testInitialDirectoryState() {
+        // Given, When
+        let viewModel = MainViewModel()
+
+        // Then
+        XCTAssertEqual(viewModel.localPath, "")
+        XCTAssertFalse(viewModel.hasSelectedDirectory)
+        XCTAssertEqual(viewModel.getFormattedPath(), "No folder selected")
+    }
+
+    func testFormattedPathWithEmptyPath() {
+        // Given
+        viewModel.localPath = ""
+
+        // When
+        let formattedPath = viewModel.getFormattedPath()
+
+        // Then
+        XCTAssertEqual(formattedPath, "No folder selected")
+    }
+
+    func testFormattedPathWithRootPath() {
+        // Given
+        viewModel.localPath = "/Applications"
+
+        // When
+        let formattedPath = viewModel.getFormattedPath()
+
+        // Then
+        XCTAssertEqual(formattedPath, "Applications")
+    }
+
+    func testFormattedPathWithNestedPath() {
+        // Given
+        viewModel.localPath = "/Users/testuser/Documents/MyProject"
+
+        // When
+        let formattedPath = viewModel.getFormattedPath()
+
+        // Then
+        XCTAssertEqual(formattedPath, "/Users/testuser/Documents/MyProject")
+    }
+
+    func testFormattedPathWithHomePath() {
+        // Given
+        viewModel.localPath = "/Users/testuser/Desktop"
+
+        // When
+        let formattedPath = viewModel.getFormattedPath()
+
+        // Then
+        XCTAssertEqual(formattedPath, "/Users/testuser/Desktop")
+    }
+
+    func testDirectorySelectionStateUpdates() {
+        // Given
+        XCTAssertFalse(viewModel.hasSelectedDirectory)
+        XCTAssertEqual(viewModel.localPath, "")
+
+        // When - Simulate successful directory selection
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // Then
+        XCTAssertTrue(viewModel.hasSelectedDirectory)
+        XCTAssertEqual(viewModel.localPath, "/Users/testuser/Documents")
+        XCTAssertEqual(viewModel.getFormattedPath(), "/Users/testuser/Documents")
+    }
+
+    // Note: Testing actual NSOpenPanel behavior requires UI testing framework
+    // These tests focus on the state management and path formatting logic
+
+    func testPathDisplayAfterSelection() {
+        // Given
+        let testPath = "/Users/testuser/Projects/MyApp"
+
+        // When
+        viewModel.localPath = testPath
+        viewModel.hasSelectedDirectory = true
+
+        // Then
+        XCTAssertEqual(viewModel.localPath, testPath)
+        XCTAssertTrue(viewModel.hasSelectedDirectory)
+        XCTAssertNotEqual(viewModel.getFormattedPath(), "No folder selected")
+    }
+
+    func testDirectorySelectionReset() {
+        // Given - Directory already selected
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // When - Reset state
+        viewModel.localPath = ""
+        viewModel.hasSelectedDirectory = false
+
+        // Then
+        XCTAssertEqual(viewModel.localPath, "")
+        XCTAssertFalse(viewModel.hasSelectedDirectory)
+        XCTAssertEqual(viewModel.getFormattedPath(), "No folder selected")
     }
 }
