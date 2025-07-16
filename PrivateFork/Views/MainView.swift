@@ -121,7 +121,9 @@ struct MainView: View {
         }
         .frame(width: 500, height: 400)
         .padding()
-        .sheet(isPresented: $viewModel.isShowingSettings) {
+        .sheet(isPresented: $viewModel.isShowingSettings, onDismiss: {
+            viewModel.hideSettings()
+        }) {
             SettingsView()
         }
     }

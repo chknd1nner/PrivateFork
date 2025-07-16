@@ -640,4 +640,56 @@ final class MainViewModelTests: XCTestCase {
         cancellable.cancel()
         XCTAssertTrue(viewModel.hasCredentials)
     }
+
+    // MARK: - Settings Sheet Dismissal Tests
+
+    func testSettingsSheetDismissalSynchronization() async {
+        // Given - Settings sheet is shown and credentials are initially not configured
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+        XCTAssertFalse(viewModel.hasCredentials)
+        
+        viewModel.showSettings()
+        XCTAssertTrue(viewModel.isShowingSettings)
+        
+        // When - Credentials are configured while settings are open
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        
+        // And settings sheet is dismissed (this simulates the onDismiss handler)
+        viewModel.hideSettings()
+        
+        // Wait for credentials check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        // Then - Credentials status should be updated and UI should be enabled
+        XCTAssertFalse(viewModel.isShowingSettings)
+        XCTAssertTrue(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
+        XCTAssertTrue(viewModel.isUIEnabled)
+    }
+
+    func testSettingsSheetDismissalWithCredentialsCleared() async {
+        // Given - Settings sheet is shown and credentials are initially configured
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+        XCTAssertTrue(viewModel.hasCredentials)
+        
+        viewModel.showSettings()
+        XCTAssertTrue(viewModel.isShowingSettings)
+        
+        // When - Credentials are cleared while settings are open
+        mockKeychainService.clearStoredCredentials()
+        
+        // And settings sheet is dismissed (this simulates the onDismiss handler)
+        viewModel.hideSettings()
+        
+        // Wait for credentials check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        // Then - Credentials status should be updated and UI should be disabled
+        XCTAssertFalse(viewModel.isShowingSettings)
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+        XCTAssertFalse(viewModel.isUIEnabled)
+    }
 }
