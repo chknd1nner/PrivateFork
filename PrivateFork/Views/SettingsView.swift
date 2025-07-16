@@ -12,75 +12,103 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("GitHub Credentials")) {
-                    TextField("GitHub Username", text: $viewModel.username)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .disabled(viewModel.isValidating)
-
-                    SecureField("Personal Access Token", text: $viewModel.token)
+        VStack(alignment: .leading, spacing: 20) {
+            // Header with title and cancel button
+            HStack {
+                Text("Settings")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                Button("Cancel") {
+                    dismiss()
+                }
+            }
+            .padding(.bottom, 10)
+            
+            // GitHub Credentials Section
+            VStack(alignment: .leading, spacing: 12) {
+                Text("GitHub Credentials")
+                    .font(.headline)
+                    .foregroundColor(.secondary)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("GitHub Username")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    TextField("Enter your GitHub username", text: $viewModel.username)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .disabled(viewModel.isValidating)
                 }
-
-                Section {
-                    Button("Validate & Save") {
-                        Task {
-                            await viewModel.validateAndSave()
-                        }
-                    }
-                    .disabled(viewModel.username.isEmpty || viewModel.token.isEmpty || viewModel.isValidating)
-
-                    Button("Clear") {
-                        Task {
-                            await viewModel.clear()
-                        }
-                    }
-                    .disabled(viewModel.isValidating)
-                    .foregroundColor(.red)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Personal Access Token")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    CustomSecureField("Enter your Personal Access Token", text: $viewModel.token)
+                        .disabled(viewModel.isValidating)
                 }
-
+            }
+            
+            // Buttons Section
+            HStack(spacing: 12) {
+                Button(action: {
+                    Task {
+                        await viewModel.validateAndSave()
+                    }
+                }) {
+                    Text("Validate & Save")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(viewModel.username.isEmpty || viewModel.token.isEmpty || viewModel.isValidating)
+                
+                Button(action: {
+                    Task {
+                        await viewModel.clear()
+                    }
+                }) {
+                    Text("Clear")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .disabled(viewModel.isValidating)
+                .foregroundColor(.red)
+            }
+            
+            // Status Messages
+            VStack(alignment: .leading, spacing: 8) {
                 if viewModel.isValidating {
-                    Section {
-                        HStack {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                            Text("Validating credentials...")
-                                .foregroundColor(.secondary)
-                        }
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text("Validating credentials...")
+                            .foregroundColor(.secondary)
                     }
                 }
-
+                
                 if let errorMessage = viewModel.errorMessage {
-                    Section {
-                        Text(errorMessage)
-                            .foregroundColor(.red)
-                            .font(.caption)
-                    }
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.caption)
                 }
-
+                
                 if viewModel.isSaved {
-                    Section {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                            Text("Credentials saved successfully")
-                                .foregroundColor(.green)
-                        }
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.green)
+                        Text("Credentials saved successfully")
+                            .foregroundColor(.green)
                     }
                 }
             }
-            .navigationTitle("Settings")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
+            
+            Spacer()
         }
-        .frame(minWidth: 400, minHeight: 300)
+        .padding(24)
+        .frame(width: 480, height: 360)
+        .background(Color(NSColor.windowBackgroundColor))
     }
 }
 
