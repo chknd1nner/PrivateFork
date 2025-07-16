@@ -23,6 +23,13 @@ MACOSX_DEPLOYMENT_TARGET = 14.0
 GENERATE_INFOPLIST_FILE = YES
 
 // ==========================================
+// Build System Configuration
+// ==========================================
+// Fix deprecated headermap warnings
+ALWAYS_SEARCH_USER_PATHS = NO
+ALWAYS_USE_SEPARATE_HEADERMAPS = YES
+
+// ==========================================
 // Entitlements
 // ==========================================
 // AI agents can modify Config/PrivateFork.entitlements to add capabilities

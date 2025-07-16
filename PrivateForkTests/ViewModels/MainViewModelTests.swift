@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import PrivateFork
 
 @MainActor
@@ -691,5 +692,168 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasCredentials)
         XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
         XCTAssertFalse(viewModel.isUIEnabled)
+    }
+
+    // MARK: - Status Message Tests
+
+    func testInitialStatusMessage() {
+        // Given, When
+        let viewModel = MainViewModel()
+
+        // Then
+        XCTAssertEqual(viewModel.statusMessage, "Ready.")
+        XCTAssertFalse(viewModel.isForking)
+    }
+
+    func testStatusMessageUpdates() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+        
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // When
+        let forkTask = Task {
+            await viewModel.createPrivateFork()
+        }
+
+        // Wait a moment to check initial status
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then - Should be in progress
+        XCTAssertTrue(viewModel.isForking)
+        XCTAssertEqual(viewModel.statusMessage, "Preparing to create private fork...")
+
+        // Wait for completion
+        await forkTask.value
+
+        // Then - Should be complete
+        XCTAssertFalse(viewModel.isForking)
+        XCTAssertEqual(viewModel.statusMessage, "Ready.")
+    }
+
+    // MARK: - Fork Button Tests
+
+    func testIsCreateButtonEnabledWhenForking() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // Verify preconditions
+        XCTAssertTrue(viewModel.isCreateButtonEnabled)
+
+        // When - Start fork operation
+        let forkTask = Task {
+            await viewModel.createPrivateFork()
+        }
+
+        // Wait a moment for fork to start
+        try? await Task.sleep(nanoseconds: 100_000_000)
+
+        // Then - Button should be disabled while forking
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+        XCTAssertTrue(viewModel.isForking)
+
+        // Clean up
+        await forkTask.value
+    }
+
+    func testCreatePrivateForkWhenNotEnabled() async {
+        // Given - Button is not enabled (no credentials)
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+
+        let initialStatus = viewModel.statusMessage
+
+        // When
+        await viewModel.createPrivateFork()
+
+        // Then - Nothing should happen
+        XCTAssertFalse(viewModel.isForking)
+        XCTAssertEqual(viewModel.statusMessage, initialStatus)
+    }
+
+    func testCreatePrivateForkProgressiveStatusUpdates() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+        
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        var statusUpdates: [String] = []
+        let expectation = XCTestExpectation(description: "Status updates should occur")
+        
+        // Monitor status changes
+        let cancellable = viewModel.$statusMessage.sink { status in
+            statusUpdates.append(status)
+            if statusUpdates.count >= 6 { // Initial + 5 updates during fork
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        await viewModel.createPrivateFork()
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 10.0)
+        cancellable.cancel()
+        
+        XCTAssertTrue(statusUpdates.contains("Preparing to create private fork..."))
+        XCTAssertTrue(statusUpdates.contains("Validating repository access..."))
+        XCTAssertTrue(statusUpdates.contains("Creating private fork..."))
+        XCTAssertTrue(statusUpdates.contains("Cloning repository..."))
+        XCTAssertTrue(statusUpdates.contains("Fork created successfully!"))
+        XCTAssertEqual(viewModel.statusMessage, "Ready.")
+        XCTAssertFalse(viewModel.isForking)
+    }
+
+    func testForkButtonStateManagement() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+        
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // Verify initial state
+        XCTAssertTrue(viewModel.isCreateButtonEnabled)
+        XCTAssertFalse(viewModel.isForking)
+
+        // When - Start fork
+        let forkTask = Task {
+            await viewModel.createPrivateFork()
+        }
+
+        // Wait for fork to start
+        try? await Task.sleep(nanoseconds: 200_000_000)
+
+        // Then - During fork
+        XCTAssertTrue(viewModel.isForking)
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+
+        // Wait for completion
+        await forkTask.value
+
+        // Then - After fork
+        XCTAssertFalse(viewModel.isForking)
+        XCTAssertTrue(viewModel.isCreateButtonEnabled)
     }
 }

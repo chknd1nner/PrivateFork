@@ -12,6 +12,8 @@ final class MainViewModel: ObservableObject {
     @Published var hasSelectedDirectory: Bool = false
     @Published var hasCredentials: Bool = false
     @Published var credentialsStatusMessage: String = ""
+    @Published var statusMessage: String = "Ready."
+    @Published var isForking: Bool = false
 
     private var debounceTimer: Timer?
     private let keychainService: KeychainServiceProtocol
@@ -189,7 +191,38 @@ final class MainViewModel: ObservableObject {
     }
 
     var isCreateButtonEnabled: Bool {
-        return hasCredentials && isValidURL && hasSelectedDirectory
+        return hasCredentials && isValidURL && hasSelectedDirectory && !isForking
+    }
+
+    // MARK: - Fork Creation
+
+    func createPrivateFork() async {
+        guard isCreateButtonEnabled else { return }
+
+        isForking = true
+        statusMessage = "Preparing to create private fork..."
+
+        do {
+            // TODO: Implement actual fork creation logic with Git commands
+            // For now, simulate the process with status updates
+            statusMessage = "Validating repository access..."
+            try await Task.sleep(for: .seconds(1))
+
+            statusMessage = "Creating private fork..."
+            try await Task.sleep(for: .seconds(2))
+
+            statusMessage = "Cloning repository..."
+            try await Task.sleep(for: .seconds(2))
+
+            statusMessage = "Fork created successfully!"
+            try await Task.sleep(for: .seconds(1))
+
+            statusMessage = "Ready."
+        } catch {
+            statusMessage = "Error creating fork: \(error.localizedDescription)"
+        }
+
+        isForking = false
     }
 }
 
