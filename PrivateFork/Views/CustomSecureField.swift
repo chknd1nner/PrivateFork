@@ -4,14 +4,14 @@ struct CustomSecureField: View {
     let title: String
     @Binding var text: String
     var isDisabled: Bool = false
-    
+
     @State private var isSecured: Bool = true
-    
+
     init(_ title: String, text: Binding<String>) {
         self.title = title
         self._text = text
     }
-    
+
     var body: some View {
         HStack {
             if isSecured {
@@ -23,7 +23,7 @@ struct CustomSecureField: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .disableAutocorrection(true)
             }
-            
+
             Button(action: {
                 isSecured.toggle()
             }) {
@@ -34,7 +34,7 @@ struct CustomSecureField: View {
             .help(isSecured ? "Show token" : "Hide token")
         }
     }
-    
+
     func disabled(_ disabled: Bool) -> some View {
         var view = self
         view.isDisabled = disabled

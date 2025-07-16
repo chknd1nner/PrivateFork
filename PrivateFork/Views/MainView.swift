@@ -25,14 +25,30 @@ struct MainView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
-            // Placeholder for future UI elements
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.secondary.opacity(0.1))
-                .frame(height: 200)
-                .overlay(
-                    Text("UI elements will be added here")
-                        .foregroundColor(.secondary)
-                )
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Repository URL")
+                    .font(.headline)
+                    .fontWeight(.medium)
+
+                TextField("https://github.com/owner/repository", text: $viewModel.repoURL)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .onChange(of: viewModel.repoURL) { _, newValue in
+                        viewModel.updateRepositoryURL(newValue)
+                    }
+
+                if !viewModel.urlValidationMessage.isEmpty {
+                    HStack {
+                        Image(systemName: viewModel.isValidURL ? "checkmark.circle" : "exclamationmark.triangle")
+                            .foregroundColor(viewModel.isValidURL ? .green : .orange)
+
+                        Text(viewModel.urlValidationMessage)
+                            .font(.caption)
+                            .foregroundColor(viewModel.isValidURL ? .green : .orange)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
 
             Spacer()
         }

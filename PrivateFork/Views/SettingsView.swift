@@ -18,21 +18,21 @@ struct SettingsView: View {
                 Text("Settings")
                     .font(.title2)
                     .fontWeight(.semibold)
-                
+
                 Spacer()
-                
+
                 Button("Cancel") {
                     dismiss()
                 }
             }
             .padding(.bottom, 10)
-            
+
             // GitHub Credentials Section
             VStack(alignment: .leading, spacing: 12) {
                 Text("GitHub Credentials")
                     .font(.headline)
                     .foregroundColor(.secondary)
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("GitHub Username")
                         .font(.caption)
@@ -41,7 +41,7 @@ struct SettingsView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .disabled(viewModel.isValidating)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Personal Access Token")
                         .font(.caption)
@@ -50,7 +50,7 @@ struct SettingsView: View {
                         .disabled(viewModel.isValidating)
                 }
             }
-            
+
             // Buttons Section
             HStack(spacing: 12) {
                 Button(action: {
@@ -63,7 +63,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(viewModel.username.isEmpty || viewModel.token.isEmpty || viewModel.isValidating)
-                
+
                 Button(action: {
                     Task {
                         await viewModel.clear()
@@ -76,7 +76,7 @@ struct SettingsView: View {
                 .disabled(viewModel.isValidating)
                 .foregroundColor(.red)
             }
-            
+
             // Status Messages
             VStack(alignment: .leading, spacing: 8) {
                 if viewModel.isValidating {
@@ -87,13 +87,13 @@ struct SettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                
+
                 if let errorMessage = viewModel.errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .font(.caption)
                 }
-                
+
                 if viewModel.isSaved {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
@@ -103,7 +103,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            
+
             Spacer()
         }
         .padding(24)
