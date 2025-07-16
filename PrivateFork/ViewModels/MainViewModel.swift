@@ -10,11 +10,18 @@ final class MainViewModel: ObservableObject {
     @Published var urlValidationMessage: String = ""
     @Published var localPath: String = ""
     @Published var hasSelectedDirectory: Bool = false
+    @Published var hasCredentials: Bool = false
+    @Published var credentialsStatusMessage: String = ""
 
     private var debounceTimer: Timer?
+    private let keychainService: KeychainServiceProtocol
 
-    init() {
-        // Initialization code will be added as needed
+    init(keychainService: KeychainServiceProtocol = KeychainService()) {
+        self.keychainService = keychainService
+
+        Task {
+            await checkCredentialsStatus()
+        }
     }
 
     func showSettings() {
@@ -23,6 +30,11 @@ final class MainViewModel: ObservableObject {
 
     func hideSettings() {
         isShowingSettings = false
+
+        // Check credentials status when returning from settings
+        Task {
+            await checkCredentialsStatus()
+        }
     }
 
     func updateRepositoryURL(_ url: String) {
@@ -100,7 +112,7 @@ final class MainViewModel: ObservableObject {
 
     func selectDirectory() async {
         let result = await performDirectorySelection()
-        
+
         switch result {
         case .success(let path):
             localPath = path
@@ -110,7 +122,7 @@ final class MainViewModel: ObservableObject {
             break
         }
     }
-    
+
     private func performDirectorySelection() async -> Result<String, DirectorySelectionError> {
         let panel = NSOpenPanel()
         panel.title = "Select Folder"
@@ -149,6 +161,35 @@ final class MainViewModel: ObservableObject {
         } else {
             return "\(parentPath)/\(lastComponent)"
         }
+    }
+
+    // MARK: - Credentials Management
+
+    func checkCredentialsStatus() async {
+        let result = await keychainService.retrieve()
+
+        switch result {
+        case .success:
+            hasCredentials = true
+            credentialsStatusMessage = "GitHub credentials configured"
+        case .failure(let error):
+            hasCredentials = false
+            if case .itemNotFound = error {
+                credentialsStatusMessage = "GitHub credentials not configured. Please configure them in Settings."
+            } else {
+                credentialsStatusMessage = "Error checking credentials: \(error.localizedDescription)"
+            }
+        }
+    }
+
+    // MARK: - UI State Computed Properties
+
+    var isUIEnabled: Bool {
+        return hasCredentials
+    }
+
+    var isCreateButtonEnabled: Bool {
+        return hasCredentials && isValidURL && hasSelectedDirectory
     }
 }
 

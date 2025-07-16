@@ -5,20 +5,27 @@ import XCTest
 final class MainViewModelTests: XCTestCase {
 
     var viewModel: MainViewModel!
+    var mockKeychainService: MockKeychainService!
 
     override func setUp() {
         super.setUp()
-        viewModel = MainViewModel()
+        mockKeychainService = MockKeychainService()
+        viewModel = MainViewModel(keychainService: mockKeychainService)
     }
 
     override func tearDown() {
         viewModel = nil
+        mockKeychainService = nil
         super.tearDown()
     }
 
-    func testInitialization() {
+    func testInitialization() async {
         // Given, When
-        let viewModel = MainViewModel()
+        let mockService = MockKeychainService()
+        let viewModel = MainViewModel(keychainService: mockService)
+
+        // Wait for initialization credential check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
 
         // Then
         XCTAssertNotNil(viewModel)
@@ -28,6 +35,8 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isShowingSettings)
         XCTAssertEqual(viewModel.localPath, "")
         XCTAssertFalse(viewModel.hasSelectedDirectory)
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
     }
 
     // MARK: - URL Validation Tests
@@ -391,5 +400,244 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.localPath, "")
         XCTAssertFalse(viewModel.hasSelectedDirectory)
         XCTAssertEqual(viewModel.getFormattedPath(), "No folder selected")
+    }
+
+    // MARK: - Credentials Tests
+
+    func testCredentialsStatusWhenNotConfigured() async {
+        // Given
+        mockKeychainService.clearStoredCredentials()
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+    }
+
+    func testCredentialsStatusWhenConfigured() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertTrue(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
+    }
+
+    func testCredentialsStatusWhenKeychainError() async {
+        // Given
+        mockKeychainService.shouldFailRetrieve = true
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+    }
+
+    func testCredentialsStatusWhenUnexpectedError() async {
+        // Given
+        mockKeychainService.shouldFailRetrieve = true
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertTrue(viewModel.credentialsStatusMessage.contains("GitHub credentials not configured"))
+    }
+
+    func testHideSettingsTriggersCredentialsCheck() async {
+        // Given
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+        XCTAssertFalse(viewModel.hasCredentials)
+
+        // Configure credentials while settings are "open"
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+
+        // When
+        viewModel.hideSettings()
+
+        // Wait for credentials check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // Then
+        XCTAssertTrue(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
+    }
+
+    // MARK: - UI State Management Tests
+
+    func testIsUIEnabledWhenCredentialsConfigured() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertTrue(viewModel.isUIEnabled)
+    }
+
+    func testIsUIEnabledWhenCredentialsNotConfigured() async {
+        // Given
+        mockKeychainService.clearStoredCredentials()
+
+        // When
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertFalse(viewModel.isUIEnabled)
+    }
+
+    func testIsCreateButtonEnabledWhenAllConditionsMet() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        // Set up valid URL
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+
+        // Set up directory selection
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // When, Then
+        XCTAssertTrue(viewModel.isCreateButtonEnabled)
+    }
+
+    func testIsCreateButtonEnabledWhenCredentialsMissing() async {
+        // Given
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+
+        // Set up valid URL
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+
+        // Set up directory selection
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // When, Then
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+    }
+
+    func testIsCreateButtonEnabledWhenURLInvalid() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        // Set up invalid URL
+        viewModel.updateRepositoryURL("invalid-url")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+
+        // Set up directory selection
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
+
+        // When, Then
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+    }
+
+    func testIsCreateButtonEnabledWhenDirectoryNotSelected() async {
+        // Given
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        // Set up valid URL
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+
+        // No directory selected
+        viewModel.hasSelectedDirectory = false
+
+        // When, Then
+        XCTAssertFalse(viewModel.isCreateButtonEnabled)
+    }
+
+    // MARK: - Real-time Updates Tests
+
+    func testCredentialsUpdateAfterSettingsChange() async {
+        // Given - Initially no credentials
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+        XCTAssertFalse(viewModel.hasCredentials)
+
+        // When - Simulate credentials being saved in settings
+        mockKeychainService.setStoredCredentials(username: "newuser", token: "newtoken")
+        viewModel.hideSettings() // This should trigger credentials recheck
+
+        // Wait for credentials check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // Then
+        XCTAssertTrue(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
+    }
+
+    func testCredentialsUpdateAfterDeletion() async {
+        // Given - Initially have credentials
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+        XCTAssertTrue(viewModel.hasCredentials)
+
+        // When - Simulate credentials being deleted in settings
+        mockKeychainService.clearStoredCredentials()
+        viewModel.hideSettings() // This should trigger credentials recheck
+
+        // Wait for credentials check
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+
+        // Then
+        XCTAssertFalse(viewModel.hasCredentials)
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+    }
+
+    func testUIStateUpdateWhenCredentialsChange() async {
+        // Given - Initially no credentials
+        mockKeychainService.clearStoredCredentials()
+        await viewModel.checkCredentialsStatus()
+        XCTAssertFalse(viewModel.isUIEnabled)
+
+        // When - Add credentials
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        XCTAssertTrue(viewModel.isUIEnabled)
+        XCTAssertTrue(viewModel.hasCredentials)
+    }
+
+    // MARK: - Published Properties Tests
+
+    func testPublishedPropertiesUpdate() async {
+        // Given
+        let expectation = XCTestExpectation(description: "Published properties should update")
+        var receivedUpdates = 0
+
+        // Monitor published property changes
+        let cancellable = viewModel.$hasCredentials.sink { _ in
+            receivedUpdates += 1
+            if receivedUpdates >= 2 { // Initial value + one update
+                expectation.fulfill()
+            }
+        }
+
+        // When
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        await viewModel.checkCredentialsStatus()
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 1.0)
+        cancellable.cancel()
+        XCTAssertTrue(viewModel.hasCredentials)
     }
 }

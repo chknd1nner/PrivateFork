@@ -25,6 +25,26 @@ struct MainView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
+            // Credentials Status Indicator
+            HStack {
+                Image(systemName: viewModel.hasCredentials ? "checkmark.circle" : "exclamationmark.triangle")
+                    .foregroundColor(viewModel.hasCredentials ? .green : .orange)
+
+                Text(viewModel.credentialsStatusMessage)
+                    .font(.caption)
+                    .foregroundColor(viewModel.hasCredentials ? .green : .orange)
+
+                if !viewModel.hasCredentials {
+                    Button("Configure") {
+                        viewModel.showSettings()
+                    }
+                    .buttonStyle(.link)
+                    .font(.caption)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 4)
+
             VStack(alignment: .leading, spacing: 6) {
                 Text("Repository URL")
                     .font(.headline)
@@ -32,6 +52,7 @@ struct MainView: View {
 
                 TextField("https://github.com/owner/repository", text: $viewModel.repoURL)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .disabled(!viewModel.isUIEnabled)
                     .onChange(of: viewModel.repoURL) { _, newValue in
                         viewModel.updateRepositoryURL(newValue)
                     }
@@ -67,6 +88,7 @@ struct MainView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                    .disabled(!viewModel.isUIEnabled)
 
                     Spacer()
                 }
@@ -79,6 +101,20 @@ struct MainView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal)
+
+            // Create Private Fork Button
+            Button(action: {
+                // TODO: Implement fork creation logic
+            }) {
+                HStack {
+                    Image(systemName: "doc.badge.plus")
+                    Text("Create Private Fork")
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(!viewModel.isCreateButtonEnabled)
             .padding(.horizontal)
 
             Spacer()
