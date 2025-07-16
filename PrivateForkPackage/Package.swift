@@ -11,7 +11,7 @@ let package = Package(
         .library(
             name: "PrivateForkFeature",
             targets: ["PrivateForkFeature"]
-        ),
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,6 +24,6 @@ let package = Package(
             dependencies: [
                 "PrivateForkFeature"
             ]
-        ),
+        )
     ]
 )
