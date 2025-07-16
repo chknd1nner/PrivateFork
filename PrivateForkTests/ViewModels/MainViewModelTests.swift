@@ -148,7 +148,10 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
-        XCTAssertEqual(viewModel.urlValidationMessage, "Invalid repository path. Expected format: github.com/owner/repository")
+        XCTAssertEqual(
+            viewModel.urlValidationMessage,
+            "Invalid repository path. Expected format: github.com/owner/repository"
+        )
     }
 
     func testGitHubURLWithOnlyOwner() async {
@@ -163,7 +166,10 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
-        XCTAssertEqual(viewModel.urlValidationMessage, "Invalid repository path. Expected format: github.com/owner/repository")
+        XCTAssertEqual(
+            viewModel.urlValidationMessage,
+            "Invalid repository path. Expected format: github.com/owner/repository"
+        )
     }
 
     func testGitHubURLWithInvalidCharacters() async {
@@ -178,7 +184,10 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
-        XCTAssertEqual(viewModel.urlValidationMessage, "Invalid repository path. Expected format: github.com/owner/repository")
+        XCTAssertEqual(
+            viewModel.urlValidationMessage,
+            "Invalid repository path. Expected format: github.com/owner/repository"
+        )
     }
 
     func testValidGitHubURLWithValidSpecialCharacters() async {
