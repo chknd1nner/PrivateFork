@@ -98,7 +98,20 @@ final class MainViewModel: ObservableObject {
         return .success(())
     }
 
-    func selectDirectory() async -> Result<Void, DirectorySelectionError> {
+    func selectDirectory() async {
+        let result = await performDirectorySelection()
+        
+        switch result {
+        case .success(let path):
+            localPath = path
+            hasSelectedDirectory = true
+        case .failure:
+            // User cancelled or no URL selected - maintain current state
+            break
+        }
+    }
+    
+    private func performDirectorySelection() async -> Result<String, DirectorySelectionError> {
         let panel = NSOpenPanel()
         panel.title = "Select Folder"
         panel.prompt = "Choose"
@@ -111,9 +124,7 @@ final class MainViewModel: ObservableObject {
 
         if response == .OK {
             if let url = panel.url {
-                localPath = url.path
-                hasSelectedDirectory = true
-                return .success(())
+                return .success(url.path)
             } else {
                 return .failure(.noURLSelected)
             }
