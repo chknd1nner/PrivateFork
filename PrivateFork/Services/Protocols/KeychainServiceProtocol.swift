@@ -4,6 +4,7 @@ protocol KeychainServiceProtocol {
     func save(username: String, token: String) async -> Result<Void, KeychainError>
     func retrieve() async -> Result<(username: String, token: String), KeychainError>
     func delete() async -> Result<Void, KeychainError>
+    func getGitHubToken() async -> Result<String, KeychainError>
 }
 
 enum KeychainError: Error, LocalizedError {

@@ -82,3 +82,6 @@ DerivedData/
 
 # Code Injection
 injected_container.swiftbuild/
+
+# Build dumps
+*.profraw
