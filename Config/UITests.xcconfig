@@ -10,5 +10,5 @@
 PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork.UITests
 TEST_TARGET_NAME = PrivateFork
 
-// Correct module name for UI tests
-PRODUCT_MODULE_NAME = $(PRODUCT_NAME)UITests
+// Set unique module name for UI tests to avoid conflicts with main app
+PRODUCT_MODULE_NAME = PrivateForkUITests

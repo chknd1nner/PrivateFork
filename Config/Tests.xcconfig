@@ -16,5 +16,5 @@ TEST_TARGET_NAME = PrivateFork
 TEST_HOST = $(BUILT_PRODUCTS_DIR)/PrivateFork.app/Contents/MacOS/PrivateFork
 BUNDLE_LOADER = $(TEST_HOST)
 
-// Fix duplicate module name issue - this should be for unit tests, not UI tests
-PRODUCT_MODULE_NAME = $(PRODUCT_NAME)Tests
+// Set unique module name for unit tests to avoid conflicts with main app
+PRODUCT_MODULE_NAME = PrivateForkTests
