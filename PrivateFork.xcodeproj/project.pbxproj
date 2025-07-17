@@ -29,8 +29,8 @@
 
 /* Begin PBXFileReference section */
 		8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrivateFork.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateForkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateForkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateFork.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BC265872DEDD3F600F279A4 /* PrivateFork.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateFork.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -121,8 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */,
-				8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */,
-				8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */,
+				8BC265872DEDD3F600F279A4 /* PrivateFork.xctest */,
+				8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,29 +154,6 @@
 			productReference = 8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8BC2658A2DEDD3F600F279A4 /* PrivateForkTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */;
-			buildPhases = (
-				8BC2658B2DEDD3F600F279A4 /* Sources */,
-				8BC265892DEDD3F600F279A4 /* Frameworks */,
-				8BC2658C2DEDD3F600F279A4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				8BC265882DEDD3F600F279A4 /* PrivateForkTests */,
-			);
-			name = PrivateForkTests;
-			packageProductDependencies = (
-			);
-			productName = PrivateForkTests;
-			productReference = 8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		8BC265732DEDD3F500F279A4 /* PrivateForkUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8BC265842DEDD3F500F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkUITests" */;
@@ -197,8 +174,31 @@
 			packageProductDependencies = (
 			);
 			productName = PrivateForkUITests;
-			productReference = 8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */;
+			productReference = 8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		8BC2658A2DEDD3F600F279A4 /* PrivateForkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */;
+			buildPhases = (
+				8BC2658B2DEDD3F600F279A4 /* Sources */,
+				8BC265892DEDD3F600F279A4 /* Frameworks */,
+				8BC2658C2DEDD3F600F279A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8BC265882DEDD3F600F279A4 /* PrivateForkTests */,
+			);
+			name = PrivateForkTests;
+			packageProductDependencies = (
+			);
+			productName = PrivateForkTests;
+			productReference = 8BC265872DEDD3F600F279A4 /* PrivateFork.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -214,11 +214,11 @@
 					8BC2655B2DEDD3F400F279A4 = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					8BC2658A2DEDD3F600F279A4 = {
+					8BC265732DEDD3F500F279A4 = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 8BC2655B2DEDD3F400F279A4;
 					};
-					8BC265732DEDD3F500F279A4 = {
+					8BC2658A2DEDD3F600F279A4 = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 8BC2655B2DEDD3F400F279A4;
 					};
@@ -256,14 +256,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8BC2658C2DEDD3F600F279A4 /* Resources */ = {
+		8BC265722DEDD3F500F279A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8BC265722DEDD3F500F279A4 /* Resources */ = {
+		8BC2658C2DEDD3F600F279A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -280,14 +280,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8BC2658B2DEDD3F600F279A4 /* Sources */ = {
+		8BC265702DEDD3F500F279A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8BC265702DEDD3F500F279A4 /* Sources */ = {
+		8BC2658B2DEDD3F600F279A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -297,15 +297,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
-			targetProxy = 8BC2658E2DEDD3F600F279A4 /* PBXContainerItemProxy */;
-		};
 		8BC265762DEDD3F500F279A4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
 			targetProxy = 8BC265752DEDD3F500F279A4 /* PBXContainerItemProxy */;
+		};
+		8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
+			targetProxy = 8BC2658E2DEDD3F600F279A4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -404,20 +404,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8BC265902DEDD3F600F279A4 /* Debug */,
-				8BC265912DEDD3F600F279A4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		8BC265842DEDD3F500F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8BC265852DEDD3F500F279A4 /* Debug */,
 				8BC265862DEDD3F500F279A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8BC265902DEDD3F600F279A4 /* Debug */,
+				8BC265912DEDD3F600F279A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
