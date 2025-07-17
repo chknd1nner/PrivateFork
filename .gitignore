@@ -45,7 +45,7 @@ playground.xcworkspace
 # hence it is not needed unless you have added a package configuration file to your project
 .swiftpm
 
-.build/
+build/
 
 # CocoaPods
 #
@@ -81,4 +81,4 @@ fastlane/test_output
 DerivedData/
 
 # Code Injection
-injected_container.swift
+injected_container.swiftbuild/
