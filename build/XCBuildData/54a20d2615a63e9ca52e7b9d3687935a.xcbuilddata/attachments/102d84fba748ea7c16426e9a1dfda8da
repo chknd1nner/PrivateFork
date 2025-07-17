@@ -1,0 +1,58 @@
+{
+  "" : {
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/PrivateForkTests-master.dia",
+    "emit-module-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/PrivateForkTests-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/PrivateForkTests-master-emit-module.dia",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/PrivateForkTests-master.swiftdeps"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkTests/Integration/MainViewIntegrationTests.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewIntegrationTests~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkTests/Mocks/MockGitHubValidationService.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockGitHubValidationService~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkTests/Mocks/MockKeychainService.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MockKeychainService~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkTests/ViewModels/MainViewModelTests.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/MainViewModelTests~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkTests/ViewModels/SettingsViewModelTests.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateForkTests.build/Objects-normal/arm64/SettingsViewModelTests~partial.swiftmodule"
+  }
+}

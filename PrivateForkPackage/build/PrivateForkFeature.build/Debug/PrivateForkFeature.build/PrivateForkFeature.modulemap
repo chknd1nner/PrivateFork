@@ -1,0 +1,4 @@
+module PrivateForkFeature {
+header "PrivateForkFeature-Swift.h"
+export *
+}

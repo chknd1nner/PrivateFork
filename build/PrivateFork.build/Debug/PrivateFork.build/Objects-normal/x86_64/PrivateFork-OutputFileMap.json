@@ -1,0 +1,138 @@
+{
+  "" : {
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateFork-master.dia",
+    "emit-module-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateFork-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateFork-master-emit-module.dia",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateFork-master.swiftdeps"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Application/PrivateForkApp.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/PrivateForkApp~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Models/AppModels.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/AppModels~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Services/Implementations/GitHubValidationService.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationService~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Services/Implementations/KeychainService.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainService~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Services/Protocols/GitHubValidationServiceProtocol.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GitHubValidationServiceProtocol~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Services/Protocols/KeychainServiceProtocol.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/KeychainServiceProtocol~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Utilities/ViewModifiers.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/ViewModifiers~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/ViewModels/MainViewModel.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainViewModel~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/ViewModels/SettingsViewModel.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsViewModel~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Views/CustomSecureField.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/CustomSecureField~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Views/MainView.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/MainView~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateFork/Views/SettingsView.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/build/PrivateFork.build/Debug/PrivateFork.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

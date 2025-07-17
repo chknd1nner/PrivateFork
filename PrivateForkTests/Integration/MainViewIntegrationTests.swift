@@ -168,7 +168,7 @@ final class MainViewIntegrationTests: XCTestCase {
         var uiStateUpdates: [Bool] = []
         let expectation = XCTestExpectation(description: "UI state should update")
 
-        viewModel.$isUIEnabled.sink { isEnabled in
+        viewModel.$hasCredentials.sink { isEnabled in
             uiStateUpdates.append(isEnabled)
             if uiStateUpdates.count >= 2 { // Initial false + true after credentials
                 expectation.fulfill()
@@ -209,7 +209,8 @@ final class MainViewIntegrationTests: XCTestCase {
         var buttonStateUpdates: [Bool] = []
         let expectation = XCTestExpectation(description: "Button state should update")
 
-        viewModel.$isCreateButtonEnabled.sink { isEnabled in
+        viewModel.$isForking.sink { isForking in
+            let isEnabled = !isForking
             buttonStateUpdates.append(isEnabled)
             if buttonStateUpdates.count >= 3 { // true -> false -> true
                 expectation.fulfill()

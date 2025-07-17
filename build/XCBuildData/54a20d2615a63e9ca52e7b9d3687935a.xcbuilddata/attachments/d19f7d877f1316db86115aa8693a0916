@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/PrivateForkFeature-master.dia",
+    "emit-module-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/PrivateForkFeature-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/PrivateForkFeature-master-emit-module.dia",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/PrivateForkFeature-master.swiftdeps"
+  },
+  "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/Sources/PrivateForkFeature/ContentView.swift" : {
+    "const-values" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/martinkuek/Documents/Projects/PrivateFork/PrivateForkPackage/build/PrivateForkFeature.build/Debug/PrivateForkFeature.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  }
+}

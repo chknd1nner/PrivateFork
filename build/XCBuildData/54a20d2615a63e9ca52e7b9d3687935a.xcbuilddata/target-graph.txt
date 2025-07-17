@@ -1,0 +1,8 @@
+Target dependency graph (4 targets)
+Target 'PrivateForkTests' in project 'PrivateFork'
+➜ Explicit dependency on target 'PrivateFork' in project 'PrivateFork'
+Target 'PrivateFork' in project 'PrivateFork'
+➜ Explicit dependency on target 'PrivateForkFeature' in project 'PrivateForkFeature'
+Target 'PrivateForkFeature' in project 'PrivateForkFeature'
+➜ Explicit dependency on target 'PrivateForkFeature' in project 'PrivateForkFeature'
+Target 'PrivateForkFeature' in project 'PrivateForkFeature' (no dependencies)

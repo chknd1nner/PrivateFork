@@ -18,11 +18,19 @@
 			remoteGlobalIDString = 8BC2655B2DEDD3F400F279A4;
 			remoteInfo = PrivateFork;
 		};
+		8BC2658E2DEDD3F600F279A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BC265542DEDD3F400F279A4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BC2655B2DEDD3F400F279A4;
+			remoteInfo = PrivateFork;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PrivateFork.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateFork.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateForkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PrivateForkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -57,6 +65,11 @@
 			path = PrivateForkUITests;
 			sourceTree = "<group>";
 		};
+		8BC265882DEDD3F600F279A4 /* PrivateForkTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PrivateForkTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +82,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8BC265712DEDD3F500F279A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BC265892DEDD3F600F279A4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -90,6 +110,7 @@
 			children = (
 				8B90D1BC2DEE373300FBD189 /* Config */,
 				8BC2655E2DEDD3F400F279A4 /* PrivateFork */,
+				8BC265882DEDD3F600F279A4 /* PrivateForkTests */,
 				8BC265772DEDD3F500F279A4 /* PrivateForkUITests */,
 				8B90D1462DEDD44A00FBD189 /* Frameworks */,
 				8BC2655D2DEDD3F400F279A4 /* Products */,
@@ -100,7 +121,8 @@
 			isa = PBXGroup;
 			children = (
 				8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */,
-				8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */,
+				8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */,
+				8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -132,6 +154,29 @@
 			productReference = 8BC2655C2DEDD3F400F279A4 /* PrivateFork.app */;
 			productType = "com.apple.product-type.application";
 		};
+		8BC2658A2DEDD3F600F279A4 /* PrivateForkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */;
+			buildPhases = (
+				8BC2658B2DEDD3F600F279A4 /* Sources */,
+				8BC265892DEDD3F600F279A4 /* Frameworks */,
+				8BC2658C2DEDD3F600F279A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8BC265882DEDD3F600F279A4 /* PrivateForkTests */,
+			);
+			name = PrivateForkTests;
+			packageProductDependencies = (
+			);
+			productName = PrivateForkTests;
+			productReference = 8BC265872DEDD3F600F279A4 /* PrivateForkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8BC265732DEDD3F500F279A4 /* PrivateForkUITests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8BC265842DEDD3F500F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkUITests" */;
@@ -152,7 +197,7 @@
 			packageProductDependencies = (
 			);
 			productName = PrivateForkUITests;
-			productReference = 8BC265742DEDD3F500F279A4 /* PrivateFork.xctest */;
+			productReference = 8BC265742DEDD3F500F279A4 /* PrivateForkUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -168,6 +213,10 @@
 				TargetAttributes = {
 					8BC2655B2DEDD3F400F279A4 = {
 						CreatedOnToolsVersion = 16.3;
+					};
+					8BC2658A2DEDD3F600F279A4 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 8BC2655B2DEDD3F400F279A4;
 					};
 					8BC265732DEDD3F500F279A4 = {
 						CreatedOnToolsVersion = 16.3;
@@ -193,6 +242,7 @@
 			projectRoot = "";
 			targets = (
 				8BC2655B2DEDD3F400F279A4 /* PrivateFork */,
+				8BC2658A2DEDD3F600F279A4 /* PrivateForkTests */,
 				8BC265732DEDD3F500F279A4 /* PrivateForkUITests */,
 			);
 		};
@@ -200,6 +250,13 @@
 
 /* Begin PBXResourcesBuildPhase section */
 		8BC2655A2DEDD3F400F279A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BC2658C2DEDD3F600F279A4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -223,6 +280,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8BC2658B2DEDD3F600F279A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8BC265702DEDD3F500F279A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -233,6 +297,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		8BC2658D2DEDD3F600F279A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
+			targetProxy = 8BC2658E2DEDD3F600F279A4 /* PBXContainerItemProxy */;
+		};
 		8BC265762DEDD3F500F279A4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
@@ -260,6 +329,7 @@
 			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
 			baseConfigurationReferenceRelativePath = Debug.xcconfig;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_DISPLAY_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -293,6 +363,26 @@
 			};
 			name = Release;
 		};
+		8BC265902DEDD3F600F279A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
+			baseConfigurationReferenceRelativePath = Tests.xcconfig;
+			buildSettings = {
+				PRODUCT_MODULE_NAME = PrivateForkTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8BC265912DEDD3F600F279A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
+			baseConfigurationReferenceRelativePath = Tests.xcconfig;
+			buildSettings = {
+				PRODUCT_MODULE_NAME = PrivateForkTests;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -310,6 +400,15 @@
 			buildConfigurations = (
 				8BC2657F2DEDD3F500F279A4 /* Debug */,
 				8BC265802DEDD3F500F279A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8BC2658F2DEDD3F600F279A4 /* Build configuration list for PBXNativeTarget "PrivateForkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8BC265902DEDD3F600F279A4 /* Debug */,
+				8BC265912DEDD3F600F279A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
