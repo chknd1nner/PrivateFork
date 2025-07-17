@@ -41,6 +41,7 @@
 				Release.xcconfig,
 				Shared.xcconfig,
 				Tests.xcconfig,
+				UITests.xcconfig,
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* PrivateFork */;
 		};
@@ -348,7 +349,7 @@
 		8BC265852DEDD3F500F279A4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
-			baseConfigurationReferenceRelativePath = Tests.xcconfig;
+			baseConfigurationReferenceRelativePath = UITests.xcconfig;
 			buildSettings = {
 				SWIFT_VERSION = 5.0;
 			};
@@ -357,7 +358,7 @@
 		8BC265862DEDD3F500F279A4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
-			baseConfigurationReferenceRelativePath = Tests.xcconfig;
+			baseConfigurationReferenceRelativePath = UITests.xcconfig;
 			buildSettings = {
 				SWIFT_VERSION = 5.0;
 			};

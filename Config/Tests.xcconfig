@@ -10,5 +10,5 @@
 PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork
 TEST_TARGET_NAME = PrivateFork
 
-// Fix duplicate module name issue
-PRODUCT_MODULE_NAME = $(PRODUCT_NAME)UITests
+// Fix duplicate module name issue - this should be for unit tests, not UI tests
+PRODUCT_MODULE_NAME = $(PRODUCT_NAME)Tests

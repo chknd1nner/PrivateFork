@@ -5,6 +5,7 @@ struct PrivateForkMain {
     // Protection against malicious input
     private static let maxArgumentLength = 4096  // Reasonable for paths/URLs
     private static let maxTotalArguments = 10    // Prevent argument flooding
+    
     static func shouldRunInCLIMode(arguments: [String]) -> Bool {
         // CONSERVATIVE APPROACH: Default to GUI mode unless we're certain it's CLI
         
@@ -61,14 +62,17 @@ struct PrivateForkMain {
     }
 }
 
+// Top-level execution
 let arguments = CommandLine.arguments
 
 if PrivateForkMain.shouldRunInCLIMode(arguments: arguments) {
+    // CLI Mode - execute outside SwiftUI lifecycle
     Task {
         let exitCode = await CLIController.run(arguments: arguments)
         exit(exitCode)
     }
-    RunLoop.main.run()
+    RunLoop.main.run() // Keep alive for async operations
 } else {
+    // GUI Mode - normal SwiftUI initialization
     PrivateForkApp.main()
 }
