@@ -7,8 +7,14 @@
 // ==========================================
 // Test Target Settings (Customizable by scaffold tool)
 // ==========================================
-PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork
+PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork.UnitTests
 TEST_TARGET_NAME = PrivateFork
+
+// ==========================================
+// Test Host Configuration (Critical for linking)
+// ==========================================
+TEST_HOST = $(BUILT_PRODUCTS_DIR)/PrivateFork.app/Contents/MacOS/PrivateFork
+BUNDLE_LOADER = $(TEST_HOST)
 
 // Fix duplicate module name issue - this should be for unit tests, not UI tests
 PRODUCT_MODULE_NAME = $(PRODUCT_NAME)Tests

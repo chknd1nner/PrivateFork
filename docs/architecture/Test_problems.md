@@ -38,3 +38,90 @@
   5. Implement Missing Tests: Replace placeholder implementations with actual test logic
 
   The test suite architecture is sound but completely non-functional due to configuration issues.
+
+---
+  ⏺ Based on my analysis and Gemini's expertise, here's a comprehensive refactoring plan to address the test suite issues:
+
+  Comprehensive Test Suite Refactoring Plan
+
+  Phase 1: Critical Fixes (Immediate - Get Tests Running)
+
+  Priority 1: Fix Test Host Configuration
+  - Configure PrivateForkTests target to link against main app
+  - Set Test Host to $(BUILT_PRODUCTS_DIR)/PrivateFork.app/Contents/MacOS/PrivateFork
+  - Add main app as target dependency in Build Phases
+  - Ensure all test files use @testable import PrivateFork
+
+  Priority 2: Resolve Bundle Identifier Conflicts
+  - Change PrivateForkTests bundle ID to com.example.PrivateFork.UnitTests
+  - Change PrivateForkUITests bundle ID to com.example.PrivateFork.UITests
+
+  Phase 2: Configuration Cleanup
+
+  Priority 3: Standardize Testing Framework
+  - Remove Swift Testing package tests (currently empty)
+  - Standardize on XCTest across all test targets for consistency
+
+  Priority 4: Clean Configuration Files
+  - Remove PRODUCT_MODULE_NAME from Tests.xcconfig to eliminate redundancy
+  - Verify framework dependencies are properly linked
+
+  Phase 3: Architectural Improvements
+
+  Priority 5: Decouple Application Launch Logic
+  - Extract dual CLI/GUI logic from main.swift into testable AppLauncher class
+  - Create separate runCLI() and runGUI() methods
+  - Make startup logic unit testable without launching full application
+
+  Phase 4: Test Implementation
+
+  Priority 6: Replace Placeholder Tests
+  - Implement actual UI tests using XCUIApplication instead of XCTAssertTrue(true)
+  - Add meaningful assertions for main window existence and key UI elements
+  - Focus on smoke tests for critical user flows
+
+  Phase 5: Long-term Maintenance
+
+  Priority 7: Establish CI/CD
+  - Add continuous integration that runs xcodebuild test -scheme PrivateFork
+  - Prevent future regressions in test configuration
+
+  Priority 8: Documentation
+  - Create TESTING.md with test target responsibilities
+  - Document bundle identifier conventions
+  - Include local test execution instructions
+
+  This plan follows the "Stabilize, Configure, Refine" approach - first getting tests to run, then improving configuration, and finally enhancing the
+  testing strategy for long-term maintainability.
+
+---
+  ⏺ ✅ Critical Test Issues Fixed Successfully
+
+  As Quinn, your Senior Developer & QA Architect, I've successfully verified and resolved the critical test suite issues:
+
+  Problems Confirmed:
+
+  1. Complete Test Execution Failure: Verified that tests failed due to undefined symbol errors
+  2. Bundle ID Conflicts: Both test targets were using the same bundle ID as the main app
+  3. Missing Test Host Configuration: Unit tests lacked proper test host settings
+
+  Fixes Implemented:
+
+  Priority 1 - Test Host Configuration ✅
+  - Added TEST_HOST = $(BUILT_PRODUCTS_DIR)/PrivateFork.app/Contents/MacOS/PrivateFork to Tests.xcconfig
+  - Added BUNDLE_LOADER = $(TEST_HOST) to enable proper symbol linking
+  - This resolves the undefined symbol errors by linking test targets to the main app
+
+  Priority 2 - Bundle Identifier Conflicts ✅
+  - Changed unit test bundle ID from com.example.PrivateFork to com.example.PrivateFork.UnitTests
+  - Changed UI test bundle ID from com.example.PrivateFork to com.example.PrivateFork.UITests
+  - This prevents runtime conflicts between test targets and the main app
+
+  Verification Results:
+
+  - Tests now execute successfully using XCodeBuildMCP tools
+  - The test suite builds and runs without undefined symbol errors
+  - Only informational warnings remain (AppIntents.framework, code signing) - these don't affect functionality
+
+  The critical linking issues have been resolved and the test suite is now functional. The well-structured unit tests (CLIControllerTests, CLIServiceTests)
+   and integration tests (MainViewIntegrationTests) can now run properly with their comprehensive test coverage and proper mock architecture.

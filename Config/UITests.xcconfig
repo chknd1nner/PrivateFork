@@ -7,7 +7,7 @@
 // ==========================================
 // UI Test Target Settings
 // ==========================================
-PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork
+PRODUCT_BUNDLE_IDENTIFIER = com.example.PrivateFork.UITests
 TEST_TARGET_NAME = PrivateFork
 
 // Correct module name for UI tests
