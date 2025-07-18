@@ -4,10 +4,11 @@ struct SettingsView: View {
     @StateObject private var viewModel: SettingsViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init() {
+    init(keychainService: KeychainServiceProtocol = KeychainService(),
+         gitHubValidationService: GitHubValidationServiceProtocol = GitHubValidationService()) {
         self._viewModel = StateObject(wrappedValue: SettingsViewModel(
-            keychainService: KeychainService(),
-            gitHubValidationService: GitHubValidationService()
+            keychainService: keychainService,
+            gitHubValidationService: gitHubValidationService
         ))
     }
 

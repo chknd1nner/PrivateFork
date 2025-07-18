@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct MainView: View {
-    @StateObject private var viewModel = MainViewModel()
+    @StateObject private var viewModel: MainViewModel
+    private let keychainService: KeychainServiceProtocol
+
+    init(keychainService: KeychainServiceProtocol = KeychainService()) {
+        self.keychainService = keychainService
+        self._viewModel = StateObject(wrappedValue: MainViewModel(keychainService: keychainService))
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -170,7 +176,11 @@ struct MainView: View {
         .sheet(isPresented: $viewModel.isShowingSettings, onDismiss: {
             viewModel.hideSettings()
         }) {
-            SettingsView()
+            SettingsView(keychainService: keychainService)
         }
     }
+}
+
+#Preview {
+    MainView()
 }

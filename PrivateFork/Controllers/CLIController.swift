@@ -18,9 +18,10 @@ class CLIController {
     func execute(arguments: [String]) async -> Int32 {
         do {
             let parsedArgs = try await parseAndValidateArguments(arguments)
-            try await validateCredentials()
+            // DEFERRED: Credential validation now happens only when actually needed
+            // This eliminates keychain security dialogs during CLI startup
 
-            print("✅ Arguments and credentials validated successfully")
+            print("✅ Arguments validated successfully")
             print("Repository: \(parsedArgs.repositoryURL)")
             print("Local Path: \(parsedArgs.localPath)")
 
@@ -75,6 +76,21 @@ class CLIController {
             fputs("💡 Run 'open -a PrivateFork' to configure your GitHub credentials.\n", stderr)
         default:
             fputs("❌ \(error.localizedDescription)\n", stderr)
+        }
+    }
+
+    /// Validates credentials only when actually needed for GitHub operations
+    /// This method should be called before any GitHub API calls, not during startup
+    private func validateCredentialsWhenNeeded() async throws {
+        let credentialsResult = await keychainService.getGitHubToken()
+
+        switch credentialsResult {
+        case .success(let token):
+            if token.isEmpty {
+                throw CLIError.credentialsNotConfigured
+            }
+        case .failure:
+            throw CLIError.credentialsNotConfigured
         }
     }
 
