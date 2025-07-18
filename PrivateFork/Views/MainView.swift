@@ -3,10 +3,14 @@ import SwiftUI
 struct MainView: View {
     @StateObject private var viewModel: MainViewModel
     private let keychainService: KeychainServiceProtocol
+    private let gitHubValidationService: GitHubValidationServiceProtocol
 
-    init(keychainService: KeychainServiceProtocol = KeychainService()) {
+    init(viewModel: MainViewModel, 
+         keychainService: KeychainServiceProtocol,
+         gitHubValidationService: GitHubValidationServiceProtocol) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
         self.keychainService = keychainService
-        self._viewModel = StateObject(wrappedValue: MainViewModel(keychainService: keychainService))
+        self.gitHubValidationService = gitHubValidationService
     }
 
     var body: some View {
@@ -176,11 +180,13 @@ struct MainView: View {
         .sheet(isPresented: $viewModel.isShowingSettings, onDismiss: {
             viewModel.hideSettings()
         }) {
-            SettingsView(keychainService: keychainService)
+            SettingsView(keychainService: keychainService, gitHubValidationService: gitHubValidationService)
         }
     }
 }
 
 #Preview {
-    MainView()
+    MainView(viewModel: MainViewModel(keychainService: KeychainService()),
+             keychainService: KeychainService(),
+             gitHubValidationService: GitHubValidationService())
 }

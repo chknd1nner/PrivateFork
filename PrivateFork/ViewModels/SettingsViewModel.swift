@@ -12,8 +12,8 @@ class SettingsViewModel: ObservableObject {
     private let gitHubValidationService: GitHubValidationServiceProtocol
 
     init(
-        keychainService: KeychainServiceProtocol = KeychainService(),
-        gitHubValidationService: GitHubValidationServiceProtocol = GitHubValidationService()
+        keychainService: KeychainServiceProtocol,
+        gitHubValidationService: GitHubValidationServiceProtocol
     ) {
         self.keychainService = keychainService
         self.gitHubValidationService = gitHubValidationService

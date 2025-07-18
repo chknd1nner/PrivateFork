@@ -114,5 +114,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(keychainService: KeychainService(),
+                gitHubValidationService: GitHubValidationService())
 }

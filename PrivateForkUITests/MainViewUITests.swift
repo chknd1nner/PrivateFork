@@ -10,6 +10,7 @@ final class MainViewUITests: XCTestCase {
     func testMainViewLaunches() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        app.launchArguments += ["UI_TESTING_MODE"]
         app.launch()
 
         // Verify that the main title is displayed

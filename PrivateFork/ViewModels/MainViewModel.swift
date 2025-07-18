@@ -18,7 +18,7 @@ final class MainViewModel: ObservableObject {
     private var debounceTimer: Timer?
     private let keychainService: KeychainServiceProtocol
 
-    init(keychainService: KeychainServiceProtocol = KeychainService()) {
+    init(keychainService: KeychainServiceProtocol) {
         self.keychainService = keychainService
 
         // LAZY INITIALIZATION: No immediate keychain access
