@@ -24,60 +24,17 @@ class GitHubService: GitHubServiceProtocol {
             return .failure(.invalidRepositoryName)
         }
 
-        // Check if repository already exists
-        let existsResult = await repositoryExists(name: name)
-        switch existsResult {
-        case .success(let exists):
-            if exists {
-                return .failure(.repositoryNameConflict(name))
-            }
-        case .failure(let error):
-            // If we can't check existence, continue with creation attempt
-            // This handles cases where the repository might be private and we can't see it
-            if case .repositoryNotFound = error {
-                // Repository doesn't exist, continue with creation
-                break
-            } else {
-                return .failure(error)
-            }
-        }
-
-        // Create the repository
-        let repositoryRequest = GitHubRepositoryRequest(
-            name: name,
-            description: description,
-            isPrivate: true,
-            hasIssues: true,
-            hasProjects: false,
-            hasWiki: false,
-            autoInit: false
-        )
-
-        let url = baseURL.appendingPathComponent("user/repos")
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
-
-        // Get credentials and set authorization header
-        let credentialsResult = await getCredentials()
-        switch credentialsResult {
-        case .success(let credentials):
-            request.setValue(credentials.authorizationHeader, forHTTPHeaderField: "Authorization")
+        // Validate repository doesn't already exist
+        let validationResult = await validateRepositoryDoesNotExist(name: name)
+        switch validationResult {
+        case .success:
+            break // Repository doesn't exist, continue with creation
         case .failure(let error):
             return .failure(error)
         }
 
-        // Encode request body
-        do {
-            let jsonData = try JSONEncoder().encode(repositoryRequest)
-            request.httpBody = jsonData
-        } catch {
-            return .failure(.unexpectedError("Failed to encode repository request: \(error.localizedDescription)"))
-        }
-
-        // Make the request
-        return await performRequest(request: request, responseType: GitHubRepository.self)
+        // Build and execute repository creation request
+        return await executeRepositoryCreationRequest(name: name, description: description)
     }
 
     func getCurrentUser() async -> Result<GitHubUser, GitHubServiceError> {
@@ -144,6 +101,70 @@ class GitHubService: GitHubServiceProtocol {
     }
 
     // MARK: - Private Methods
+
+    private func validateRepositoryDoesNotExist(name: String) async -> Result<Void, GitHubServiceError> {
+        let existsResult = await repositoryExists(name: name)
+        switch existsResult {
+        case .success(let exists):
+            if exists {
+                return .failure(.repositoryNameConflict(name))
+            }
+            return .success(())
+        case .failure(let error):
+            // If we can't check existence, continue with creation attempt
+            // This handles cases where the repository might be private and we can't see it
+            if case .repositoryNotFound = error {
+                // Repository doesn't exist, continue with creation
+                return .success(())
+            } else {
+                return .failure(error)
+            }
+        }
+    }
+
+    private func executeRepositoryCreationRequest(name: String, description: String?) async -> Result<GitHubRepository, GitHubServiceError> {
+        // Build repository creation request
+        let repositoryRequest = buildRepositoryRequest(name: name, description: description)
+        
+        // Create URL request
+        let url = baseURL.appendingPathComponent("user/repos")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+
+        // Get credentials and set authorization header
+        let credentialsResult = await getCredentials()
+        switch credentialsResult {
+        case .success(let credentials):
+            request.setValue(credentials.authorizationHeader, forHTTPHeaderField: "Authorization")
+        case .failure(let error):
+            return .failure(error)
+        }
+
+        // Encode request body
+        do {
+            let jsonData = try JSONEncoder().encode(repositoryRequest)
+            request.httpBody = jsonData
+        } catch {
+            return .failure(.unexpectedError("Failed to encode repository request: \(error.localizedDescription)"))
+        }
+
+        // Make the request
+        return await performRequest(request: request, responseType: GitHubRepository.self)
+    }
+
+    private func buildRepositoryRequest(name: String, description: String?) -> GitHubRepositoryRequest {
+        return GitHubRepositoryRequest(
+            name: name,
+            description: description,
+            isPrivate: true,
+            hasIssues: true,
+            hasProjects: false,
+            hasWiki: false,
+            autoInit: false
+        )
+    }
 
     private func getCredentials() async -> Result<GitHubCredentials, GitHubServiceError> {
         let result = await keychainService.retrieve()
