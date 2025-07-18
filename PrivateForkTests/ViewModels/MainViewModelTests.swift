@@ -25,8 +25,8 @@ final class MainViewModelTests: XCTestCase {
         let mockService = MockKeychainService()
         let viewModel = MainViewModel(keychainService: mockService)
 
-        // Wait for initialization credential check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        // Explicitly initialize credentials check (lazy initialization)
+        await viewModel.initializeCredentialsCheck()
 
         // Then
         XCTAssertNotNil(viewModel)

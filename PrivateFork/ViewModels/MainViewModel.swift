@@ -77,6 +77,11 @@ final class MainViewModel: ObservableObject {
             return .failure(.invalidURL)
         }
 
+        // Check if URL has proper scheme and host (catch malformed URLs)
+        guard url.scheme != nil && url.host != nil else {
+            return .failure(.invalidURL)
+        }
+
         // Check for GitHub domain
         guard let host = url.host?.lowercased(),
               host == "github.com" || host == "www.github.com" else {
@@ -211,6 +216,7 @@ final class MainViewModel: ObservableObject {
         do {
             // TODO: Implement actual fork creation logic with Git commands
             // For now, simulate the process with status updates
+            try await Task.sleep(for: .milliseconds(200)) // Give time for UI to update
             statusMessage = "Validating repository access..."
             try await Task.sleep(for: .seconds(1))
 

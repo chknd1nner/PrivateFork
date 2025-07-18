@@ -94,7 +94,7 @@ final class GitHubServiceTests: XCTestCase {
         // Given: Valid credentials but rate limited response
         mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
 
-        let headers = ["X-RateLimit-Reset": "1640995200"] // Unix timestamp
+        let headers = ["Retry-After": "1640995200"] // Unix timestamp
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: Data(), statusCode: 429, headers: headers)
 
         // When: Validating credentials

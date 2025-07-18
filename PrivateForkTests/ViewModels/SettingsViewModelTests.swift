@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import PrivateFork
 
 @MainActor
@@ -55,8 +56,18 @@ final class SettingsViewModelTests: XCTestCase {
             gitHubValidationService: mockGitHubValidationService
         )
 
-        // Wait for initialization to complete
-        await Task.yield()
+        // Wait for the async initialization to complete using expectation
+        let expectation = XCTestExpectation(description: "Credentials should be loaded")
+        
+        let cancellable = newViewModel.$username
+            .sink { username in
+                if username == "testuser" {
+                    expectation.fulfill()
+                }
+            }
+        
+        await fulfillment(of: [expectation], timeout: 1.0)
+        cancellable.cancel()
 
         // Then: Fields should be populated
         XCTAssertEqual(newViewModel.username, "testuser")
@@ -151,18 +162,34 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.token = "validtoken"
         mockGitHubValidationService.setValidationResult(isValid: true)
 
-        // When: Validate and save starts
-        let validationTask = Task {
-            await viewModel.validateAndSave()
-        }
+        // Create expectations for the validating state changes
+        let validatingTrueExpectation = XCTestExpectation(description: "Should set validating to true")
+        let validatingFalseExpectation = XCTestExpectation(description: "Should set validating to false")
+        
+        var receivedStates: [Bool] = []
+        
+        // Subscribe to the publisher before acting
+        let cancellable = viewModel.$isValidating
+            .sink { isValidating in
+                receivedStates.append(isValidating)
+                if isValidating == true {
+                    validatingTrueExpectation.fulfill()
+                } else if receivedStates.contains(true) && isValidating == false {
+                    // Only fulfill false expectation if we've seen true first
+                    validatingFalseExpectation.fulfill()
+                }
+            }
 
-        // Then: isValidating should be true during operation
-        XCTAssertTrue(viewModel.isValidating)
+        // When: Validate and save is called
+        await viewModel.validateAndSave()
 
-        await validationTask.value
-
-        // And: isValidating should be false after completion
-        XCTAssertFalse(viewModel.isValidating)
+        // Then: Should have seen both true and false states
+        await fulfillment(of: [validatingTrueExpectation, validatingFalseExpectation], timeout: 1.0)
+        
+        XCTAssertTrue(receivedStates.contains(true), "Should have been validating at some point")
+        XCTAssertFalse(viewModel.isValidating, "Should not be validating after completion")
+        
+        cancellable.cancel()
     }
 
     // MARK: - Clear Tests

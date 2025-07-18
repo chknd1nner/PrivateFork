@@ -212,8 +212,8 @@ final class CLIServiceTests: XCTestCase {
     }
 
     func testValidateArguments_PathTooLong_ShouldFail() async {
-        // Given: Path that exceeds length limit
-        let veryLongPath = "/" + String(repeating: "directory/", count: 100)
+        // Given: Path that exceeds length limit (1024 characters)
+        let veryLongPath = "/" + String(repeating: "directory/", count: 105) // 105 * 10 + 1 = 1051 characters
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: veryLongPath)
 
         // When: Validating arguments

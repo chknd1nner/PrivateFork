@@ -111,6 +111,18 @@ struct GitHubRepositoryRequest: Codable {
         case hasWiki = "has_wiki"
         case autoInit = "auto_init"
     }
+    
+    // Custom encoding to include null values explicitly
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(description, forKey: .description)
+        try container.encode(isPrivate, forKey: .isPrivate)
+        try container.encode(hasIssues, forKey: .hasIssues)
+        try container.encode(hasProjects, forKey: .hasProjects)
+        try container.encode(hasWiki, forKey: .hasWiki)
+        try container.encode(autoInit, forKey: .autoInit)
+    }
 }
 
 // MARK: - GitHub Credentials Model
