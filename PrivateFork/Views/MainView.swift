@@ -158,6 +158,13 @@ struct MainView: View {
 
             Spacer()
         }
+        .onAppear {
+            // LAZY KEYCHAIN ACCESS: Only check credentials when GUI actually loads
+            // This maintains GUI functionality while keeping CLI mode free of keychain dialogs
+            Task {
+                await viewModel.initializeCredentialsCheck()
+            }
+        }
         .frame(width: 500, height: 480)
         .padding()
         .sheet(isPresented: $viewModel.isShowingSettings, onDismiss: {

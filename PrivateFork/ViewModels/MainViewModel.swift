@@ -21,9 +21,9 @@ final class MainViewModel: ObservableObject {
     init(keychainService: KeychainServiceProtocol = KeychainService()) {
         self.keychainService = keychainService
 
-        Task {
-            await checkCredentialsStatus()
-        }
+        // LAZY INITIALIZATION: No immediate keychain access
+        // Keychain will be accessed on-demand when explicitly needed
+        // This prevents security dialogs during CLI mode startup
     }
 
     func showSettings() {
@@ -166,6 +166,12 @@ final class MainViewModel: ObservableObject {
     }
 
     // MARK: - Credentials Management
+
+    /// Explicitly check credentials when GUI actually needs them
+    /// Call this when MainView appears or user interacts with UI
+    func initializeCredentialsCheck() async {
+        await checkCredentialsStatus()
+    }
 
     func checkCredentialsStatus() async {
         let result = await keychainService.retrieve()
