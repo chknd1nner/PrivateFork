@@ -79,7 +79,7 @@ final class PrivateForkUITests: XCTestCase {
         
         // Clear field for next test
         urlField.tap()
-        urlField.typeKey(.selectAll, modifierFlags: .command)
+        urlField.typeKey("a", modifierFlags: .command)
         urlField.typeText("")
     }
 }

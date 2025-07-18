@@ -10,7 +10,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return false (GUI mode)
         XCTAssertFalse(shouldRunCLI)
@@ -21,7 +21,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "https://github.com/user/repo", "/tmp/test"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return true (CLI mode)
         XCTAssertTrue(shouldRunCLI)
@@ -32,7 +32,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "-NSDocumentRevisionsDebugMode", "YES", "-ApplePersistenceIgnoreState", "YES"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return false (GUI mode)
         XCTAssertFalse(shouldRunCLI)
@@ -43,7 +43,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "-psn_0_123456", "-AppleLocale", "en_US", "-com.apple.CoreGraphics.MaxFrameRate", "60"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return false (GUI mode)
         XCTAssertFalse(shouldRunCLI)
@@ -54,7 +54,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = Array(repeating: "arg", count: 15)
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return true (CLI mode for error handling)
         XCTAssertTrue(shouldRunCLI)
@@ -66,7 +66,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", veryLongArg]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return true (CLI mode for error handling)
         XCTAssertTrue(shouldRunCLI)
@@ -77,7 +77,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "-NSDocumentRevisionsDebugMode", "https://github.com/user/repo", "/tmp/test", "-ApplePersistenceIgnoreState"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return true (CLI mode) as valid arguments are present
         XCTAssertTrue(shouldRunCLI)
@@ -88,7 +88,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "/Users/dev/Library/Developer/Xcode/DerivedData/PrivateFork-abc/Build/Products/Debug/PrivateFork.app"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return false (GUI mode)
         XCTAssertFalse(shouldRunCLI)
@@ -99,7 +99,7 @@ final class DualLaunchIntegrationTests: XCTestCase {
         let arguments = ["PrivateFork", "/path/to/Build/Products/Debug/PrivateFork"]
         
         // When: Checking if should run in CLI mode
-        let shouldRunCLI = PrivateForkMain.shouldRunInCLIMode(arguments: arguments)
+        let shouldRunCLI = AppLauncher.shouldRunInCLIMode(arguments: arguments)
         
         // Then: Should return false (GUI mode)
         XCTAssertFalse(shouldRunCLI)
