@@ -12,7 +12,7 @@ enum CLIError: Error, LocalizedError, Equatable {
     case credentialsNotConfigured
     case credentialValidationFailed
     case operationFailed(String)
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidArguments(let details):

@@ -649,19 +649,19 @@ final class MainViewModelTests: XCTestCase {
         mockKeychainService.clearStoredCredentials()
         await viewModel.checkCredentialsStatus()
         XCTAssertFalse(viewModel.hasCredentials)
-        
+
         viewModel.showSettings()
         XCTAssertTrue(viewModel.isShowingSettings)
-        
+
         // When - Credentials are configured while settings are open
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-        
+
         // And settings sheet is dismissed (this simulates the onDismiss handler)
         viewModel.hideSettings()
-        
+
         // Wait for credentials check
         try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-        
+
         // Then - Credentials status should be updated and UI should be enabled
         XCTAssertFalse(viewModel.isShowingSettings)
         XCTAssertTrue(viewModel.hasCredentials)
@@ -674,19 +674,19 @@ final class MainViewModelTests: XCTestCase {
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
         await viewModel.checkCredentialsStatus()
         XCTAssertTrue(viewModel.hasCredentials)
-        
+
         viewModel.showSettings()
         XCTAssertTrue(viewModel.isShowingSettings)
-        
+
         // When - Credentials are cleared while settings are open
         mockKeychainService.clearStoredCredentials()
-        
+
         // And settings sheet is dismissed (this simulates the onDismiss handler)
         viewModel.hideSettings()
-        
+
         // Wait for credentials check
         try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-        
+
         // Then - Credentials status should be updated and UI should be disabled
         XCTAssertFalse(viewModel.isShowingSettings)
         XCTAssertFalse(viewModel.hasCredentials)
@@ -709,10 +709,10 @@ final class MainViewModelTests: XCTestCase {
         // Given
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
         await viewModel.checkCredentialsStatus()
-        
+
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
         try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
-        
+
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
 
@@ -788,16 +788,16 @@ final class MainViewModelTests: XCTestCase {
         // Given
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
         await viewModel.checkCredentialsStatus()
-        
+
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
         try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
-        
+
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
 
         var statusUpdates: [String] = []
         let expectation = XCTestExpectation(description: "Status updates should occur")
-        
+
         // Monitor status changes
         let cancellable = viewModel.$statusMessage.sink { status in
             statusUpdates.append(status)
@@ -812,7 +812,7 @@ final class MainViewModelTests: XCTestCase {
         // Then
         await fulfillment(of: [expectation], timeout: 10.0)
         cancellable.cancel()
-        
+
         XCTAssertTrue(statusUpdates.contains("Preparing to create private fork..."))
         XCTAssertTrue(statusUpdates.contains("Validating repository access..."))
         XCTAssertTrue(statusUpdates.contains("Creating private fork..."))
@@ -826,10 +826,10 @@ final class MainViewModelTests: XCTestCase {
         // Given
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
         await viewModel.checkCredentialsStatus()
-        
+
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
         try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
-        
+
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
 

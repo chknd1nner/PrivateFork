@@ -34,16 +34,16 @@ class MockKeychainService: KeychainServiceProtocol {
         storedCredentials = nil
         return .success(())
     }
-    
+
     func getGitHubToken() async -> Result<String, KeychainError> {
         if shouldFailRetrieve {
             return .failure(.itemNotFound)
         }
-        
+
         guard let credentials = storedCredentials else {
             return .failure(.itemNotFound)
         }
-        
+
         return .success(credentials.token)
     }
 

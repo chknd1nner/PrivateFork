@@ -57,10 +57,10 @@ class KeychainService: KeychainServiceProtocol {
             return .failure(error)
         }
     }
-    
+
     func getGitHubToken() async -> Result<String, KeychainError> {
         let tokenResult = await retrieveItem(key: tokenKey)
-        
+
         switch tokenResult {
         case .success(let tokenData):
             guard let token = String(data: tokenData, encoding: .utf8) else {

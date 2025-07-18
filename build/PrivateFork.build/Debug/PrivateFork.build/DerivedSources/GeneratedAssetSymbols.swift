@@ -23,4 +23,3 @@ extension DeveloperToolsSupport.ColorResource {
 extension DeveloperToolsSupport.ImageResource {
 
 }
-
