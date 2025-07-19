@@ -77,34 +77,37 @@ final class CLIControllerTests: XCTestCase {
         XCTAssertEqual(exitCode, CLIExitCode.invalidArguments.rawValue)
     }
 
-    // MARK: - Credential Validation Failures
+    // MARK: - Deferred Credential Validation Tests
+    // Note: Credential validation is now deferred to avoid keychain security dialogs during CLI startup
+    // These tests validate that the CLI can start successfully with missing credentials,
+    // following the improved automation-friendly design
 
-    func testExecute_CredentialsNotConfigured_ShouldReturnCredentialsNotConfiguredExitCode() async {
-        // Given: Valid arguments but no credentials
+    func testExecute_CredentialsNotConfigured_ShouldReturnSuccess() async {
+        // Given: Valid arguments but no credentials (credentials validation is deferred)
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: "/tmp/test")
         mockCLIService.parseArgumentsResult = .success(arguments)
         mockCLIService.validateArgumentsResult = .success(())
         mockKeychainService.clearStoredCredentials()
 
-        // When: Executing CLI controller
+        // When: Executing CLI controller (argument parsing and validation only)
         let exitCode = await cliController.execute(arguments: ["PrivateFork", "https://github.com/user/repo", "/tmp/test"])
 
-        // Then: Should return credentials not configured exit code
-        XCTAssertEqual(exitCode, CLIExitCode.credentialsNotConfigured.rawValue)
+        // Then: Should return success because credential validation is deferred until actually needed
+        XCTAssertEqual(exitCode, CLIExitCode.success.rawValue)
     }
 
-    func testExecute_EmptyToken_ShouldReturnCredentialsNotConfiguredExitCode() async {
-        // Given: Valid arguments but empty token
+    func testExecute_EmptyToken_ShouldReturnSuccess() async {
+        // Given: Valid arguments but empty token (credentials validation is deferred)
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: "/tmp/test")
         mockCLIService.parseArgumentsResult = .success(arguments)
         mockCLIService.validateArgumentsResult = .success(())
         mockKeychainService.setStoredCredentials(username: "testuser", token: "")
 
-        // When: Executing CLI controller
+        // When: Executing CLI controller (argument parsing and validation only)
         let exitCode = await cliController.execute(arguments: ["PrivateFork", "https://github.com/user/repo", "/tmp/test"])
 
-        // Then: Should return credentials not configured exit code
-        XCTAssertEqual(exitCode, CLIExitCode.credentialsNotConfigured.rawValue)
+        // Then: Should return success because credential validation is deferred until actually needed
+        XCTAssertEqual(exitCode, CLIExitCode.success.rawValue)
     }
 
     // MARK: - Static Run Method
@@ -116,7 +119,18 @@ final class CLIControllerTests: XCTestCase {
         // When: Running static method
         let exitCode = await CLIController.run(arguments: arguments)
 
-        // Then: Should return appropriate exit code (will vary based on actual implementation)
-        XCTAssertTrue(exitCode >= 0)
+        // Then: Should return success exit code for valid arguments (credentials validation deferred)
+        XCTAssertEqual(exitCode, CLIExitCode.success.rawValue)
     }
+
+    // MARK: - Future Integration Tests
+    // Note: These tests would validate credential validation when actually needed
+    // They should be implemented when the full fork operation is integrated
+    
+    /* Example future test:
+    func testForkOperation_WhenCredentialsMissing_ShouldFailWithCredentialsError() async {
+        // This test would validate that when the fork operation actually tries to use credentials,
+        // missing credentials cause the operation to fail with the appropriate exit code
+    }
+    */
 }

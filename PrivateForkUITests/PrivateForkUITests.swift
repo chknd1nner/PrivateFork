@@ -53,8 +53,8 @@ final class PrivateForkUITests: XCTestCase {
         XCTAssertTrue(cancelButton.exists, "Cancel button should exist")
         cancelButton.tap()
 
-        // Verify settings sheet is dismissed
-        XCTAssertFalse(app.sheets.firstMatch.exists, "Settings sheet should be dismissed")
+        // Verify settings sheet is dismissed - wait for animation to complete
+        XCTAssertTrue(app.sheets.firstMatch.waitForNonExistence(timeout: 2), "Settings sheet should be dismissed")
     }
 
     @MainActor
