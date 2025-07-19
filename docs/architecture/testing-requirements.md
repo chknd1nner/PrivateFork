@@ -1,12 +1,16 @@
 # **Testing Requirements**
 
-## **Test Execution Command**
+## **Test Execution**
 
+**Expected Result**: All tests should pass. Any failures indicate code issues that MUST be fixed before story completion.
+
+### XCodeBuildMCP tool (preferred)
+Use XcodeBuildMCP tool: test_macos_proj
+
+### Bash command (fallback)
 ```bash
 xcodebuild test -scheme PrivateFork -quiet
 ```
-
-**Expected Result**: All tests should pass. Any failures indicate code issues that MUST be fixed before story completion.
 
 ## **Test Suite Architecture**
 
@@ -116,7 +120,7 @@ let viewModel = MainViewModel(keychainService: mockKeychainService)
 ## **Dev Agent Workflow**
 
 1. **Implement Features**: Write code following existing patterns and architecture
-2. **Run Tests**: Execute `xcodebuild test -scheme PrivateFork -quiet`
+2. **Run Tests**: Use XcodeBuildMCP tool: test_macos_proj, fallback: Execute `xcodebuild test -scheme PrivateFork -quiet`
 3. **Fix Failures**: Address any test failures before claiming story completion
 4. **Verify Coverage**: Ensure new code has corresponding test coverage
 5. **Story Completion**: Only mark stories "Ready for review" when ALL tests pass
