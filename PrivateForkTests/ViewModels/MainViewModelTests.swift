@@ -303,8 +303,7 @@ final class MainViewModelTests: XCTestCase {
     // MARK: - Directory Selection Tests
 
     func testInitialDirectoryState() {
-        // Given, When
-        let viewModel = MainViewModel()
+        // Given the viewModel from setUp (configured with MockKeychainService)
 
         // Then
         XCTAssertEqual(viewModel.localPath, "")
@@ -697,8 +696,7 @@ final class MainViewModelTests: XCTestCase {
     // MARK: - Status Message Tests
 
     func testInitialStatusMessage() {
-        // Given, When
-        let viewModel = MainViewModel()
+        // Given the viewModel from setUp (configured with MockKeychainService)
 
         // Then
         XCTAssertEqual(viewModel.statusMessage, "Ready.")
