@@ -26,6 +26,17 @@ final class MainViewModel: ObservableObject {
         // This prevents security dialogs during CLI mode startup
     }
 
+    // MARK: - Convenience Initializer with Test Protection
+    convenience init() {
+        #if DEBUG
+        // Detect test environment and prevent real service usage
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            fatalError("❌ MainViewModel() must not be used in tests. Use dependency injection with MockKeychainService instead.")
+        }
+        #endif
+        self.init(keychainService: KeychainService())
+    }
+
     func showSettings() {
         isShowingSettings = true
     }
