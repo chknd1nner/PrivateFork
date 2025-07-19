@@ -38,12 +38,10 @@ final class MainViewModel: ObservableObject {
         self.init(keychainService: KeychainService())
     }
 
-    #if DEBUG
     /// Configure debounce interval for testing purposes
     func setDebounceInterval(_ interval: TimeInterval) {
         debounceInterval = interval
     }
-    #endif
 
     func showSettings() {
         isShowingSettings = true
@@ -64,10 +62,17 @@ final class MainViewModel: ObservableObject {
         // Cancel previous timer
         debounceTimer?.invalidate()
 
-        // Start new timer with configurable debounce delay
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: debounceInterval, repeats: false) { _ in
+        // If debounce interval is 0 or very small, validate immediately
+        if debounceInterval <= 0.001 {
             Task { @MainActor in
                 await self.validateURL()
+            }
+        } else {
+            // Start new timer with configurable debounce delay
+            debounceTimer = Timer.scheduledTimer(withTimeInterval: debounceInterval, repeats: false) { _ in
+                Task { @MainActor in
+                    await self.validateURL()
+                }
             }
         }
     }

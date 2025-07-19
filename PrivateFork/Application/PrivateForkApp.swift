@@ -6,7 +6,6 @@ struct PrivateForkApp: App {
     init() {
         // 1. Create the correct services based on the environment
         let keychainService = Self.createKeychainService()
-        let gitHubValidationService = Self.createGitHubValidationService()
         
         // 2. Create view models, injecting the services
         self.mainViewModel = MainViewModel(keychainService: keychainService)

@@ -105,7 +105,6 @@ let viewModel = MainViewModel(keychainService: mockKeychainService)
 **Protection Features:**
 - **Runtime Detection**: Automatically detects test environment using `XCTestConfigurationFilePath`
 - **Fail-Fast**: Immediate crash with educational error message
-- **Zero Cost**: `#if DEBUG` compilation ensures no production impact
 - **Developer Education**: Clear guidance on correct dependency injection patterns
 
 ### **Test Target Configuration**
@@ -161,6 +160,12 @@ func testDebouncingBehavior() async {
 }
 ```
 
+**CRITICAL Implementation Details:**
+- The `setDebounceInterval` method is available in all builds (not restricted by `#if DEBUG`)
+- When debounce interval is set to 0 or ≤ 0.001 seconds, validation executes immediately instead of using Timer
+- This prevents Timer scheduling issues that can cause test failures
+- Always call `await Task.yield()` after URL updates to ensure validation completes
+
 ### **UI Test Accessibility Requirements**
 All interactive UI elements MUST include accessibility identifiers:
 
@@ -184,3 +189,27 @@ let button = app.buttons.firstMatch // DON'T DO THIS
 - Unit tests should complete in <100ms per test
 - Debouncing disabled reduces test suite time by ~70%
 - UI tests with accessibility identifiers are 3x more reliable
+
+## **Troubleshooting Common Test Issues**
+
+### **Issue: Method Not Found Errors**
+```
+error: value of type 'MainViewModel' has no member 'setDebounceInterval'
+```
+**Solution**: Ensure the method is not wrapped in `#if DEBUG`. Test targets may compile with optimization flags that strip debug code.
+
+### **Issue: URL Validation Tests Failing**
+```
+XCTAssertTrue failed - isValidURL is false when it should be true
+XCTAssertEqual failed: ("") is not equal to ("Valid GitHub repository URL")
+```
+**Root Cause**: Timer with 0-second interval doesn't fire properly.
+**Solution**: The `updateRepositoryURL` method now handles zero intervals by validating immediately instead of using Timer.
+
+### **Issue: Optimization Level Conflicts**
+If tests compile with `-O` instead of `-Onone`, debug-only code will be stripped.
+**Solution**: Remove `#if DEBUG` guards from test helper methods and ensure they're safe for all builds.
+
+### **Issue: Test Performance**
+Slow test execution due to `Task.sleep` calls.
+**Solution**: Use `viewModel.setDebounceInterval(0)` and `await Task.yield()` instead of sleep delays.
