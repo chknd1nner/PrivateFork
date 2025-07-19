@@ -33,22 +33,23 @@ xcodebuild test -scheme PrivateFork -quiet
 
 Unit tests for ViewModels are mandatory and will follow the Given-When-Then structure using XCTest. Dependencies will be mocked to isolate the logic under test.
 
+**CRITICAL**: ViewModels have test environment protection that prevents real service usage. You MUST use dependency injection with mock services.
+
 ```swift
 import XCTest  
 @testable import PrivateFork
 
+@MainActor
 final class MainViewModelTests: XCTestCase {
 
     var viewModel: MainViewModel!  
-    var mockGitService: MockGitService!  
-    var mockGitHubService: MockGitHubService!
+    var mockKeychainService: MockKeychainService!
 
     override func setUp() {  
         super.setUp()  
-        // Given: A ViewModel with mocked dependencies  
-        mockGitService = MockGitService()  
-        mockGitHubService = MockGitHubService()  
-        viewModel = MainViewModel(gitService: mockGitService, githubService: mockGitHubService)  
+        // REQUIRED: Inject mock services - parameterless init() will crash in tests
+        mockKeychainService = MockKeychainService()
+        viewModel = MainViewModel(keychainService: mockKeychainService)  
     }
 
     func testCreatePrivateFork_WhenSuccessful_ShouldUpdateStatus() async {  
@@ -82,7 +83,28 @@ final class MainViewModelTests: XCTestCase {
 - **Coverage Goals**: Maintain >90% code coverage on all non-View logic
 - **Test Structure**: Strictly follow the Arrange-Act-Assert (or Given-When-Then) pattern
 - **Mock Dependencies**: All external dependencies MUST be mocked in unit tests
+- **Test Protection**: ViewModels have built-in test environment protection - parameterless constructors will crash in tests with clear error messages
+- **Service Injection**: NEVER use `MainViewModel()` or `SettingsViewModel()` in tests - always inject mock services
 - **Async Testing**: Use async/await test functions and expectation patterns for testing asynchronous operations
+
+### **Test Environment Protection**
+
+ViewModels include built-in safeguards to prevent real service usage during testing:
+
+```swift
+// ❌ FORBIDDEN - Will crash in tests with clear error message
+let viewModel = MainViewModel()  // Uses real KeychainService
+
+// ✅ REQUIRED - Proper dependency injection
+let mockKeychainService = MockKeychainService()
+let viewModel = MainViewModel(keychainService: mockKeychainService)
+```
+
+**Protection Features:**
+- **Runtime Detection**: Automatically detects test environment using `XCTestConfigurationFilePath`
+- **Fail-Fast**: Immediate crash with educational error message
+- **Zero Cost**: `#if DEBUG` compilation ensures no production impact
+- **Developer Education**: Clear guidance on correct dependency injection patterns
 
 ### **Test Target Configuration**
 - **PrivateForkTests**: Bundle ID `com.example.PrivateFork.UnitTests`
