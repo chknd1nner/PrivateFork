@@ -12,6 +12,7 @@ final class MainViewModelTests: XCTestCase {
         super.setUp()
         mockKeychainService = MockKeychainService()
         viewModel = MainViewModel(keychainService: mockKeychainService)
+        viewModel.setDebounceInterval(0) // Disable debouncing for faster tests
     }
 
     override func tearDown() {
@@ -48,9 +49,7 @@ final class MainViewModelTests: XCTestCase {
 
         // When
         viewModel.updateRepositoryURL(validURL)
-
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000) // 0.4 seconds
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertEqual(viewModel.repoURL, validURL)
@@ -64,9 +63,7 @@ final class MainViewModelTests: XCTestCase {
 
         // When
         viewModel.updateRepositoryURL(validURL)
-
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertTrue(viewModel.isValidURL)
@@ -79,9 +76,7 @@ final class MainViewModelTests: XCTestCase {
 
         // When
         viewModel.updateRepositoryURL(validURL)
-
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertTrue(viewModel.isValidURL)
@@ -95,8 +90,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(emptyURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -110,8 +104,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(whitespaceURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -125,8 +118,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(invalidURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -140,8 +132,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(nonGitHubURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -155,8 +146,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(incompleteURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -173,8 +163,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(incompleteURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -191,8 +180,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(invalidURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -209,8 +197,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(validURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertTrue(viewModel.isValidURL)
@@ -224,8 +211,7 @@ final class MainViewModelTests: XCTestCase {
         // When
         viewModel.updateRepositoryURL(validURL)
 
-        // Wait for debounced validation
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertTrue(viewModel.isValidURL)
@@ -235,7 +221,8 @@ final class MainViewModelTests: XCTestCase {
     // MARK: - Debouncing Tests
 
     func testDebouncingBehavior() async {
-        // Given
+        // Given - Set a small debounce interval to test the behavior
+        viewModel.setDebounceInterval(0.1) // Short interval for test
         let initialURL = "https://github.com/owner/repo"
         let finalURL = "https://github.com/owner/repository"
 
@@ -247,7 +234,7 @@ final class MainViewModelTests: XCTestCase {
         viewModel.updateRepositoryURL(finalURL)
 
         // Wait for debounced validation (should only validate the final URL)
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        try? await Task.sleep(nanoseconds: 150_000_000) // 0.15 seconds
 
         // Then
         XCTAssertEqual(viewModel.repoURL, finalURL)
@@ -261,14 +248,14 @@ final class MainViewModelTests: XCTestCase {
 
         // When - Multiple separate validation calls
         viewModel.updateRepositoryURL(validURL)
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Verify first validation
         XCTAssertTrue(viewModel.isValidURL)
 
         // Update with invalid URL
         viewModel.updateRepositoryURL("invalid")
-        try? await Task.sleep(nanoseconds: 400_000_000)
+        await Task.yield() // Allow the validation task to run immediately
 
         // Then
         XCTAssertFalse(viewModel.isValidURL)
@@ -503,7 +490,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Set up valid URL
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         // Set up directory selection
         viewModel.localPath = "/Users/testuser/Documents"
@@ -520,7 +507,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Set up valid URL
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         // Set up directory selection
         viewModel.localPath = "/Users/testuser/Documents"
@@ -537,7 +524,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Set up invalid URL
         viewModel.updateRepositoryURL("invalid-url")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         // Set up directory selection
         viewModel.localPath = "/Users/testuser/Documents"
@@ -554,7 +541,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Set up valid URL
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         // No directory selected
         viewModel.hasSelectedDirectory = false
@@ -709,7 +696,7 @@ final class MainViewModelTests: XCTestCase {
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
@@ -742,7 +729,7 @@ final class MainViewModelTests: XCTestCase {
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
@@ -788,7 +775,7 @@ final class MainViewModelTests: XCTestCase {
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
@@ -826,7 +813,7 @@ final class MainViewModelTests: XCTestCase {
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
-        try? await Task.sleep(nanoseconds: 400_000_000) // Wait for URL validation
+        await Task.yield() // Allow the validation task to run immediately
 
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true

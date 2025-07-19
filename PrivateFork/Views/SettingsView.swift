@@ -25,6 +25,7 @@ struct SettingsView: View {
                 Button("Cancel") {
                     dismiss()
                 }
+                .accessibilityIdentifier("settings-cancel-button")
             }
             .padding(.bottom, 10)
 
@@ -41,6 +42,7 @@ struct SettingsView: View {
                     TextField("Enter your GitHub username", text: $viewModel.username)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .disabled(viewModel.isValidating)
+                        .accessibilityIdentifier("username-field")
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -49,6 +51,7 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                     CustomSecureField("Enter your Personal Access Token", text: $viewModel.token)
                         .disabled(viewModel.isValidating)
+                        .accessibilityIdentifier("token-field")
                 }
             }
 
@@ -64,6 +67,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(viewModel.username.isEmpty || viewModel.token.isEmpty || viewModel.isValidating)
+                .accessibilityIdentifier("validate-save-button")
 
                 Button(action: {
                     Task {
@@ -76,6 +80,7 @@ struct SettingsView: View {
                 .buttonStyle(.bordered)
                 .disabled(viewModel.isValidating)
                 .foregroundColor(.red)
+                .accessibilityIdentifier("clear-button")
             }
 
             // Status Messages

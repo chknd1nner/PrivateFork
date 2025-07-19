@@ -26,12 +26,10 @@ final class PrivateForkUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["PrivateFork"].exists, "App title should be displayed")
 
         // Verify core UI elements are present and accessible
-        XCTAssertTrue(app.buttons["Settings"].exists, "Settings button should be accessible")
-        XCTAssertTrue(app.textFields.containing(.any, identifier: "repository-url-field").element.exists ||
-                     app.textFields.matching(identifier: "repository-url-field").firstMatch.exists ||
-                     app.textFields.firstMatch.exists, "Repository URL field should be present")
-        XCTAssertTrue(app.buttons["Select Folder"].exists, "Directory selection button should be accessible")
-        XCTAssertTrue(app.buttons["Create Private Fork"].exists, "Create fork button should be present")
+        XCTAssertTrue(app.buttons["settings-button"].exists, "Settings button should be accessible")
+        XCTAssertTrue(app.textFields["repository-url-field"].exists, "Repository URL field should be present")
+        XCTAssertTrue(app.buttons["select-folder-button"].exists, "Directory selection button should be accessible")
+        XCTAssertTrue(app.buttons["create-private-fork-button"].exists, "Create fork button should be present")
     }
 
     @MainActor
@@ -41,23 +39,19 @@ final class PrivateForkUITests: XCTestCase {
         app.launch()
 
         // Test settings button opens settings sheet
-        let settingsButton = app.buttons["Settings"]
+        let settingsButton = app.buttons["settings-button"]
         XCTAssertTrue(settingsButton.exists, "Settings button should exist")
 
         settingsButton.tap()
 
         // Verify settings sheet appears with expected elements
         XCTAssertTrue(app.sheets.firstMatch.waitForExistence(timeout: 2), "Settings sheet should appear")
-        XCTAssertTrue(app.textFields.containing(.any, identifier: "username").element.exists ||
-                     app.textFields.firstMatch.exists, "Username field should be present in settings")
+        XCTAssertTrue(app.textFields["username-field"].exists, "Username field should be present in settings")
 
         // Test dismissing settings sheet
-        if app.buttons["Cancel"].exists {
-            app.buttons["Cancel"].tap()
-        } else {
-            // Alternative dismissal method if Cancel button not found
-            app.keyboards.keys["Escape"].tap()
-        }
+        let cancelButton = app.buttons["settings-cancel-button"]
+        XCTAssertTrue(cancelButton.exists, "Cancel button should exist")
+        cancelButton.tap()
 
         // Verify settings sheet is dismissed
         XCTAssertFalse(app.sheets.firstMatch.exists, "Settings sheet should be dismissed")
@@ -70,7 +64,7 @@ final class PrivateForkUITests: XCTestCase {
         app.launch()
 
         // Find the repository URL field
-        let urlField = app.textFields.firstMatch
+        let urlField = app.textFields["repository-url-field"]
         XCTAssertTrue(urlField.exists, "Repository URL field should exist")
 
         // Test URL field interaction

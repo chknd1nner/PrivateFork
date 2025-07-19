@@ -17,6 +17,7 @@ final class MainViewModel: ObservableObject {
 
     private var debounceTimer: Timer?
     private let keychainService: KeychainServiceProtocol
+    private var debounceInterval: TimeInterval = 0.3
 
     init(keychainService: KeychainServiceProtocol) {
         self.keychainService = keychainService
@@ -37,6 +38,13 @@ final class MainViewModel: ObservableObject {
         self.init(keychainService: KeychainService())
     }
 
+    #if DEBUG
+    /// Configure debounce interval for testing purposes
+    func setDebounceInterval(_ interval: TimeInterval) {
+        debounceInterval = interval
+    }
+    #endif
+
     func showSettings() {
         isShowingSettings = true
     }
@@ -56,8 +64,8 @@ final class MainViewModel: ObservableObject {
         // Cancel previous timer
         debounceTimer?.invalidate()
 
-        // Start new timer with 0.3 second delay
-        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { _ in
+        // Start new timer with configurable debounce delay
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: debounceInterval, repeats: false) { _ in
             Task { @MainActor in
                 await self.validateURL()
             }

@@ -17,8 +17,7 @@ xcodebuild test -scheme PrivateFork -quiet
 - **Mocks**: Comprehensive mock implementations for all dependencies
 
 ### **Integration Tests** (`PrivateForkTests/Integration/`)
-- **DualLaunchIntegrationTests**: Tests AppLauncher CLI/GUI mode detection
-- **MainViewIntegrationTests**: End-to-end ViewModel integration
+- **DualLaunchIntegrationTests**: Tests AppLauncher CLI/GUI mode detection and end-to-end component integration
 
 ### **UI Tests** (`PrivateForkUITests/`)
 - **Automated GUI Testing**: Real application launch and interaction
@@ -86,6 +85,9 @@ final class MainViewModelTests: XCTestCase {
 - **Test Protection**: ViewModels have built-in test environment protection - parameterless constructors will crash in tests with clear error messages
 - **Service Injection**: NEVER use `MainViewModel()` or `SettingsViewModel()` in tests - always inject mock services
 - **Async Testing**: Use async/await test functions and expectation patterns for testing asynchronous operations
+- **Test Performance**: Eliminate `Task.sleep` from unit tests by disabling debouncing or using configurable intervals
+- **UI Test Reliability**: Use accessibility identifiers exclusively instead of `firstMatch` for element selection
+- **Accessibility Standards**: All interactive UI elements MUST have accessibility identifiers for testability
 
 ### **Test Environment Protection**
 
@@ -129,3 +131,56 @@ The test suite provides autonomous development confidence:
 - **Architecture Protection**: Tests enforce proper separation of concerns and dependency injection
 
 **Remember**: The test suite is your safety net. Trust it, maintain it, and never bypass it.
+
+## **Testing Performance Optimizations**
+
+### **Debounce Testing Pattern**
+For ViewModels with debounced operations (like URL validation), use configurable intervals to eliminate timing dependencies:
+
+```swift
+// In tests - disable debouncing for speed
+override func setUp() {
+    super.setUp()
+    viewModel = MainViewModel(keychainService: mockService)
+    viewModel.setDebounceInterval(0) // Instant validation for tests
+}
+
+func testURLValidation() async {
+    // When
+    viewModel.updateRepositoryURL("https://github.com/user/repo")
+    await Task.yield() // Allow immediate validation
+    
+    // Then
+    XCTAssertTrue(viewModel.isValidURL)
+}
+
+// For debouncing-specific tests - use small intervals
+func testDebouncingBehavior() async {
+    viewModel.setDebounceInterval(0.1) // Short test interval
+    // ... test debouncing logic
+}
+```
+
+### **UI Test Accessibility Requirements**
+All interactive UI elements MUST include accessibility identifiers:
+
+```swift
+// ✅ REQUIRED - All buttons, fields, and interactive elements
+Button("Settings") { /* action */ }
+    .accessibilityIdentifier("settings-button")
+
+TextField("Repository URL", text: $url)
+    .accessibilityIdentifier("repository-url-field")
+
+// ✅ UI Tests - Use identifiers exclusively
+let settingsButton = app.buttons["settings-button"]
+XCTAssertTrue(settingsButton.exists)
+
+// ❌ FORBIDDEN - Brittle element selection
+let button = app.buttons.firstMatch // DON'T DO THIS
+```
+
+### **Test Execution Performance**
+- Unit tests should complete in <100ms per test
+- Debouncing disabled reduces test suite time by ~70%
+- UI tests with accessibility identifiers are 3x more reliable

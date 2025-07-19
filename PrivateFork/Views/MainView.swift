@@ -26,6 +26,7 @@ struct MainView: View {
                 .buttonStyle(PlainButtonStyle())
                 .accessibilityLabel("Settings")
                 .accessibilityHint("Open application settings")
+                .accessibilityIdentifier("settings-button")
             }
             .padding(.top)
 
@@ -67,6 +68,7 @@ struct MainView: View {
                     .disabled(!viewModel.isUIEnabled)
                     .accessibilityLabel("Repository URL")
                     .accessibilityHint("Enter the GitHub repository URL to fork")
+                    .accessibilityIdentifier("repository-url-field")
                     .onChange(of: viewModel.repoURL) { _, newValue in
                         viewModel.updateRepositoryURL(newValue)
                     }
@@ -105,6 +107,7 @@ struct MainView: View {
                     .disabled(!viewModel.isUIEnabled)
                     .accessibilityLabel("Select Folder")
                     .accessibilityHint("Choose the local directory where the fork will be created")
+                    .accessibilityIdentifier("select-folder-button")
 
                     Spacer()
                 }
@@ -164,6 +167,7 @@ struct MainView: View {
             .disabled(!viewModel.isCreateButtonEnabled)
             .accessibilityLabel(viewModel.isForking ? "Creating Fork" : "Create Private Fork")
             .accessibilityHint(viewModel.isForking ? "Fork creation in progress" : "Start creating a private fork of the repository")
+            .accessibilityIdentifier("create-private-fork-button")
             .padding(.horizontal)
 
             Spacer()
