@@ -36,7 +36,7 @@ xcodebuild test -scheme PrivateFork -quiet
 
 Unit tests for ViewModels are mandatory and will follow the Given-When-Then structure using XCTest. Dependencies will be mocked to isolate the logic under test.
 
-**CRITICAL**: ViewModels have test environment protection that prevents real service usage. You MUST use dependency injection with mock services.
+**CRITICAL**: ViewModels have test environment protection that prevents real service usage. You MUST use dependency injection with mock services. GUI tests MUST mock Keychain services to prevent interactive dialogs during automated test execution.
 
 ```swift
 import XCTest  
@@ -85,7 +85,7 @@ final class MainViewModelTests: XCTestCase {
 - **UI Tests**: Test critical user workflows with `XCUIApplication`
 - **Coverage Goals**: Maintain >90% code coverage on all non-View logic
 - **Test Structure**: Strictly follow the Arrange-Act-Assert (or Given-When-Then) pattern
-- **Mock Dependencies**: All external dependencies MUST be mocked in unit tests
+- **Mock Dependencies**: All external dependencies MUST be mocked in unit tests, especially Keychain services to prevent interactive authentication dialogs
 - **Test Protection**: ViewModels have built-in test environment protection - parameterless constructors will crash in tests with clear error messages
 - **Service Injection**: NEVER use `MainViewModel()` or `SettingsViewModel()` in tests - always inject mock services
 - **Async Testing**: Use async/await test functions and expectation patterns for testing asynchronous operations

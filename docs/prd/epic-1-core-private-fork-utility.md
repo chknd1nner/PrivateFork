@@ -1,6 +1,6 @@
 # **Epic 1 Core Private Fork Utility**
 
-The goal of this epic is to deliver the complete MVP. This includes the foundational project setup, the user interface for both the main action and settings, secure credential handling, and the core automation logic accessible from both the GUI and a command-line interface.
+The goal of this epic is to deliver the complete MVP. This includes the foundational project setup, the user interface for both the main action and settings, secure credential handling, and the core automation logic accessible from the GUI. CLI operation will be implemented in a future epic alongside OAuth integration.
 
 ## **Story 1.1 Project Foundation and Setup**
 
@@ -43,7 +43,10 @@ As a user, I want a simple and intuitive interface, so that I can perform the pr
 8. An indicator is present on the main view to show whether GitHub credentials have been saved. If not saved, a message invites the user to configure them in settings. This indicator updates immediately when credentials are saved or cleared.  
 9. The repository URL input, folder selector button, and "Create Private Fork" button are disabled/greyed-out until valid GitHub credentials have been saved.
 
-## **Story 1.4 Core Automation Logic via CLI**
+## **Story 1.4 Core Automation Logic via CLI** *(DEFERRED - Future OAuth Epic)*
+
+**Status**: Deferred to future epic for implementation alongside OAuth integration.
+**Reason**: CLI operation requires non-interactive credential access to maintain automation value.
 
 As a power user, I want to be able to run the private fork operation from the command line, so that I can integrate it into scripts and automated workflows.
 

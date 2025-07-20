@@ -40,7 +40,7 @@ Currently, a developer must manually clone the public repo, switch to the GitHub
    - Clone the public repository to the user-specified local folder.  
    - Configure the local clone's git remotes, setting upstream to the original public repository and origin to the new private repository.  
    - Perform the initial push of the code to the new private repository.  
-9. The application must support being launched from the command line, allowing all necessary parameters (public repository URL, local destination folder) to be passed as arguments to trigger the core automation process directly, without launching the GUI.
+9. **[FUTURE ROADMAP]** The application will support being launched from the command line, allowing all necessary parameters (public repository URL, local destination folder) to be passed as arguments to trigger the core automation process directly, without launching the GUI. This will be implemented alongside OAuth integration to enable non-interactive credential access.
 
 ### **Non-Functional**
 
@@ -98,18 +98,18 @@ The project will require both unit tests for individual components and logic, as
 
 - **Language/Framework:** The application will be built natively for macOS using Swift and SwiftUI.  
 - **Core Logic (MVP):** The initial version will wrap and execute standard command-line git operations. It will not use a native Git library.  
-- **Authentication (MVP):** GitHub API access will be handled via a user-provided Personal Access Token (PAT). OAuth is out of scope for the MVP.  
+- **Authentication (MVP):** GitHub API access will be handled via a user-provided Personal Access Token (PAT). OAuth is out of scope for the MVP but planned for future implementation to enable CLI operation.  
 - **Secure Storage:** The GitHub PAT must be stored securely in the native macOS Keychain.  
 - **Development Model:** The application will be implemented by an LLM coding assistant, under the direction of a user with no prior Swift coding experience. This implies that code must be clear, conventional, and well-documented.  
 - **Scope Limitation:** The utility is intended exclusively for creating private forks of **public** GitHub repositories.
 
 ## **Epic List**
 
-* **Epic 1: Core Private Fork Utility:** Deliver a fully functional macOS application that reliably performs the private fork operation via both a GUI and a CLI, including secure credential storage and clear user feedback.
+* **Epic 1: Core Private Fork Utility:** Deliver a fully functional macOS application that reliably performs the private fork operation via a GUI, including secure credential storage and clear user feedback. CLI operation deferred to future epic with OAuth integration.
 
 ## **Epic 1 Core Private Fork Utility**
 
-The goal of this epic is to deliver the complete MVP. This includes the foundational project setup, the user interface for both the main action and settings, secure credential handling, and the core automation logic accessible from both the GUI and a command-line interface.
+The goal of this epic is to deliver the complete MVP. This includes the foundational project setup, the user interface for both the main action and settings, secure credential handling, and the core automation logic accessible from the GUI. CLI operation will be implemented in a future epic alongside OAuth integration.
 
 ### **Story 1.1 Project Foundation and Setup**
 
@@ -152,7 +152,10 @@ As a user, I want a simple and intuitive interface, so that I can perform the pr
 8. An indicator is present on the main view to show whether GitHub credentials have been saved. If not saved, a message invites the user to configure them in settings. This indicator updates immediately when credentials are saved or cleared.  
 9. The repository URL input, folder selector button, and "Create Private Fork" button are disabled/greyed-out until valid GitHub credentials have been saved.
 
-### **Story 1.4 Core Automation Logic via CLI**
+### **Story 1.4 Core Automation Logic via CLI** *(DEFERRED - Future OAuth Epic)*
+
+**Status**: Deferred to future epic for implementation alongside OAuth integration.
+**Reason**: CLI operation requires non-interactive credential access to maintain automation value.
 
 As a power user, I want to be able to run the private fork operation from the command line, so that I can integrate it into scripts and automated workflows.
 
