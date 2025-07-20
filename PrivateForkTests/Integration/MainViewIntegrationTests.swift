@@ -12,7 +12,11 @@ final class MainViewIntegrationTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockKeychainService = MockKeychainService()
-        viewModel = MainViewModel(keychainService: mockKeychainService)
+        let mockOrchestrator = MockPrivateForkOrchestrator()
+        viewModel = MainViewModel(
+            keychainService: mockKeychainService,
+            privateForkOrchestrator: mockOrchestrator
+        )
         cancellables = Set<AnyCancellable>()
     }
 

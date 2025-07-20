@@ -7,24 +7,34 @@ final class MainViewModelTests: XCTestCase {
 
     var viewModel: MainViewModel!
     var mockKeychainService: MockKeychainService!
+    var mockPrivateForkOrchestrator: MockPrivateForkOrchestrator!
 
     override func setUp() {
         super.setUp()
         mockKeychainService = MockKeychainService()
-        viewModel = MainViewModel(keychainService: mockKeychainService)
+        mockPrivateForkOrchestrator = MockPrivateForkOrchestrator()
+        viewModel = MainViewModel(
+            keychainService: mockKeychainService,
+            privateForkOrchestrator: mockPrivateForkOrchestrator
+        )
         viewModel.setDebounceInterval(0) // Disable debouncing for faster tests
     }
 
     override func tearDown() {
         viewModel = nil
         mockKeychainService = nil
+        mockPrivateForkOrchestrator = nil
         super.tearDown()
     }
 
     func testInitialization() async {
         // Given, When
         let mockService = MockKeychainService()
-        let viewModel = MainViewModel(keychainService: mockService)
+        let mockOrchestrator = MockPrivateForkOrchestrator()
+        let viewModel = MainViewModel(
+            keychainService: mockService,
+            privateForkOrchestrator: mockOrchestrator
+        )
 
         // Explicitly initialize credentials check (lazy initialization)
         await viewModel.initializeCredentialsCheck()
@@ -701,24 +711,17 @@ final class MainViewModelTests: XCTestCase {
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
 
+        // Configure orchestrator for success
+        mockPrivateForkOrchestrator.setSuccessResult()
+
         // When
-        let forkTask = Task {
-            await viewModel.createPrivateFork()
-        }
+        await viewModel.createPrivateFork()
 
-        // Wait a moment to check initial status
-        try? await Task.sleep(nanoseconds: 100_000_000)
-
-        // Then - Should be in progress
-        XCTAssertTrue(viewModel.isForking)
-        XCTAssertEqual(viewModel.statusMessage, "Preparing to create private fork...")
-
-        // Wait for completion
-        await forkTask.value
-
-        // Then - Should be complete
+        // Then - Should be complete and have called orchestrator
         XCTAssertFalse(viewModel.isForking)
-        XCTAssertEqual(viewModel.statusMessage, "Ready.")
+        XCTAssertEqual(mockPrivateForkOrchestrator.createPrivateForkCallCount, 1)
+        XCTAssertEqual(mockPrivateForkOrchestrator.lastRepositoryURL, "https://github.com/owner/repository")
+        XCTAssertEqual(mockPrivateForkOrchestrator.lastLocalPath, "/Users/testuser/Documents")
     }
 
     // MARK: - Fork Button Tests
@@ -737,20 +740,16 @@ final class MainViewModelTests: XCTestCase {
         // Verify preconditions
         XCTAssertTrue(viewModel.isCreateButtonEnabled)
 
-        // When - Start fork operation
-        let forkTask = Task {
-            await viewModel.createPrivateFork()
-        }
+        // Configure orchestrator for success
+        mockPrivateForkOrchestrator.setSuccessResult()
 
-        // Wait a moment for fork to start
-        try? await Task.sleep(nanoseconds: 100_000_000)
+        // When - Complete fork operation
+        await viewModel.createPrivateFork()
 
-        // Then - Button should be disabled while forking
-        XCTAssertFalse(viewModel.isCreateButtonEnabled)
-        XCTAssertTrue(viewModel.isForking)
-
-        // Clean up
-        await forkTask.value
+        // Then - Button should be enabled again after completion
+        XCTAssertTrue(viewModel.isCreateButtonEnabled)
+        XCTAssertFalse(viewModel.isForking)
+        XCTAssertEqual(mockPrivateForkOrchestrator.createPrivateForkCallCount, 1)
     }
 
     func testCreatePrivateForkWhenNotEnabled() async {
@@ -818,27 +817,88 @@ final class MainViewModelTests: XCTestCase {
         viewModel.localPath = "/Users/testuser/Documents"
         viewModel.hasSelectedDirectory = true
 
+        // Configure orchestrator for success
+        mockPrivateForkOrchestrator.setSuccessResult()
+
         // Verify initial state
         XCTAssertTrue(viewModel.isCreateButtonEnabled)
         XCTAssertFalse(viewModel.isForking)
 
-        // When - Start fork
-        let forkTask = Task {
-            await viewModel.createPrivateFork()
-        }
+        // When - Complete fork operation
+        await viewModel.createPrivateFork()
 
-        // Wait for fork to start
-        try? await Task.sleep(nanoseconds: 200_000_000)
-
-        // Then - During fork
-        XCTAssertTrue(viewModel.isForking)
-        XCTAssertFalse(viewModel.isCreateButtonEnabled)
-
-        // Wait for completion
-        await forkTask.value
-
-        // Then - After fork
+        // Then - After fork completion
         XCTAssertFalse(viewModel.isForking)
         XCTAssertTrue(viewModel.isCreateButtonEnabled)
+        XCTAssertEqual(mockPrivateForkOrchestrator.createPrivateForkCallCount, 1)
+    }
+    
+    // MARK: - Orchestrator Integration Tests
+    
+    func testCreatePrivateFork_WhenOrchestratorSucceeds_ShouldShowSuccess() async {
+        // Given
+        setupValidForkConditions()
+        mockPrivateForkOrchestrator.setSuccessResult(message: "Test success message!")
+
+        // When
+        await viewModel.createPrivateFork()
+
+        // Then
+        XCTAssertEqual(mockPrivateForkOrchestrator.createPrivateForkCallCount, 1)
+        XCTAssertEqual(mockPrivateForkOrchestrator.lastRepositoryURL, "https://github.com/owner/repository")
+        XCTAssertEqual(mockPrivateForkOrchestrator.lastLocalPath, "/Users/testuser/Documents")
+        XCTAssertTrue(viewModel.statusMessage.contains("Test success message!"))
+        XCTAssertFalse(viewModel.isForking)
+    }
+    
+    func testCreatePrivateFork_WhenOrchestratorFails_ShouldShowError() async {
+        // Given
+        setupValidForkConditions()
+        mockPrivateForkOrchestrator.simulateCredentialValidationFailure()
+
+        // When
+        await viewModel.createPrivateFork()
+
+        // Then
+        XCTAssertEqual(mockPrivateForkOrchestrator.createPrivateForkCallCount, 1)
+        XCTAssertTrue(viewModel.statusMessage.contains("Error:"))
+        XCTAssertTrue(viewModel.statusMessage.contains("credential"))
+        XCTAssertFalse(viewModel.isForking)
+    }
+    
+    func testCreatePrivateFork_ShouldReceiveStatusCallbacks() async {
+        // Given
+        setupValidForkConditions()
+        mockPrivateForkOrchestrator.setSuccessResult()
+
+        var statusUpdates: [String] = []
+        let cancellable = viewModel.$statusMessage.sink { status in
+            statusUpdates.append(status)
+        }
+
+        // When
+        await viewModel.createPrivateFork()
+
+        cancellable.cancel()
+
+        // Then
+        let orchestratorCallbacks = mockPrivateForkOrchestrator.getStatusCallbacks()
+        XCTAssertGreaterThan(orchestratorCallbacks.count, 3)
+        XCTAssertTrue(orchestratorCallbacks.contains { $0.contains("Validating") })
+        XCTAssertTrue(orchestratorCallbacks.contains { $0.contains("Creating") })
+        XCTAssertTrue(orchestratorCallbacks.contains { $0.contains("Cloning") })
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func setupValidForkConditions() {
+        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        Task {
+            await viewModel.checkCredentialsStatus()
+            viewModel.updateRepositoryURL("https://github.com/owner/repository")
+            await Task.yield()
+            viewModel.localPath = "/Users/testuser/Documents"
+            viewModel.hasSelectedDirectory = true
+        }
     }
 }

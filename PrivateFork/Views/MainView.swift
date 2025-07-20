@@ -190,7 +190,36 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(viewModel: MainViewModel(keychainService: KeychainService()),
-             keychainService: KeychainService(),
-             gitHubValidationService: GitHubValidationService())
+    // Use mock services for preview to prevent Keychain access during development
+    let mockKeychainService = PreviewMockKeychainService()
+    let mockOrchestrator = PreviewMockOrchestrator()
+    let mockGitHubValidationService = PreviewMockGitHubValidationService()
+    
+    MainView(
+        viewModel: MainViewModel(
+            keychainService: mockKeychainService, 
+            privateForkOrchestrator: mockOrchestrator
+        ),
+        keychainService: mockKeychainService,
+        gitHubValidationService: mockGitHubValidationService
+    )
+}
+
+// MARK: - Preview Mock Services
+private class PreviewMockKeychainService: KeychainServiceProtocol {
+    func save(username: String, token: String) async -> Result<Void, KeychainError> { .success(()) }
+    func retrieve() async -> Result<(username: String, token: String), KeychainError> { .success(("preview", "token")) }
+    func delete() async -> Result<Void, KeychainError> { .success(()) }
+    func getGitHubToken() async -> Result<String, KeychainError> { .success("preview-token") }
+}
+
+private class PreviewMockOrchestrator: PrivateForkOrchestratorProtocol {
+    func createPrivateFork(repositoryURL: String, localPath: String, statusCallback: @escaping (String) -> Void) async -> Result<String, PrivateForkError> {
+        statusCallback("Preview mode - no actual fork created")
+        return .success("Preview mode success")
+    }
+}
+
+private class PreviewMockGitHubValidationService: GitHubValidationServiceProtocol {
+    func validateCredentials(username: String, token: String) async -> Result<Bool, GitHubValidationError> { .success(true) }
 }

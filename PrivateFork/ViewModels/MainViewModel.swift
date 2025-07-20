@@ -17,10 +17,15 @@ final class MainViewModel: ObservableObject {
 
     private var debounceTimer: Timer?
     private let keychainService: KeychainServiceProtocol
+    private let privateForkOrchestrator: PrivateForkOrchestratorProtocol
     private var debounceInterval: TimeInterval = 0.3
 
-    init(keychainService: KeychainServiceProtocol) {
+    init(
+        keychainService: KeychainServiceProtocol,
+        privateForkOrchestrator: PrivateForkOrchestratorProtocol
+    ) {
         self.keychainService = keychainService
+        self.privateForkOrchestrator = privateForkOrchestrator
 
         // LAZY INITIALIZATION: No immediate keychain access
         // Keychain will be accessed on-demand when explicitly needed
@@ -32,10 +37,18 @@ final class MainViewModel: ObservableObject {
         #if DEBUG
         // Detect test environment and prevent real service usage
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
-            fatalError("❌ MainViewModel() must not be used in tests. Use dependency injection with MockKeychainService instead.")
+            fatalError("❌ MainViewModel() must not be used in tests. Use dependency injection with mock services instead.")
         }
         #endif
-        self.init(keychainService: KeychainService())
+        let keychainService = KeychainService()
+        let gitHubService = GitHubService(keychainService: keychainService)
+        let gitService = GitService()
+        let orchestrator = PrivateForkOrchestrator(
+            keychainService: keychainService,
+            gitHubService: gitHubService,
+            gitService: gitService
+        )
+        self.init(keychainService: keychainService, privateForkOrchestrator: orchestrator)
     }
 
     /// Configure debounce interval for testing purposes
@@ -237,28 +250,33 @@ final class MainViewModel: ObservableObject {
         isForking = true
         statusMessage = "Preparing to create private fork..."
 
-        do {
-            // TODO: Implement actual fork creation logic with Git commands
-            // For now, simulate the process with status updates
-            try await Task.sleep(for: .milliseconds(200)) // Give time for UI to update
-            statusMessage = "Validating repository access..."
-            try await Task.sleep(for: .seconds(1))
+        let result = await privateForkOrchestrator.createPrivateFork(
+            repositoryURL: repoURL,
+            localPath: localPath
+        ) { status in
+            // Status callback for real-time updates
+            Task { @MainActor in
+                self.statusMessage = status
+            }
+        }
 
-            statusMessage = "Creating private fork..."
-            try await Task.sleep(for: .seconds(2))
-
-            statusMessage = "Cloning repository..."
-            try await Task.sleep(for: .seconds(2))
-
-            statusMessage = "Fork created successfully!"
-            try await Task.sleep(for: .seconds(1))
-
-            statusMessage = "Ready."
-        } catch {
-            statusMessage = "Error creating fork: \(error.localizedDescription)"
+        switch result {
+        case .success(let message):
+            statusMessage = message
+            // Reset form after successful fork creation
+            Task {
+                try await Task.sleep(for: .seconds(2))
+                await resetForm()
+            }
+        case .failure(let error):
+            statusMessage = "Error: \(error.localizedDescription)"
         }
 
         isForking = false
+    }
+
+    private func resetForm() async {
+        statusMessage = "Ready."
     }
 }
 
