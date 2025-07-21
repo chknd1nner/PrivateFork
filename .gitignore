@@ -88,3 +88,4 @@ injected_container.swiftbuild/
 *.profraw
 .build/
 build/
+TestResults*
