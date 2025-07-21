@@ -264,7 +264,7 @@ final class MainViewModel: ObservableObject {
         case .success(let message):
             statusMessage = message
             // Reset form after successful fork creation
-            Task {
+            Task { @MainActor in
                 try await Task.sleep(for: .seconds(2))
                 await resetForm()
             }

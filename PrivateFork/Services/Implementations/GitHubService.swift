@@ -99,6 +99,57 @@ class GitHubService: GitHubServiceProtocol {
             return .failure(error)
         }
     }
+    
+    func deleteRepository(name: String) async -> Result<Void, GitHubServiceError> {
+        guard !name.isEmpty, isValidRepositoryName(name) else {
+            return .failure(.invalidRepositoryName)
+        }
+        
+        // Get current user first to build the repository URL
+        let userResult = await getCurrentUser()
+        switch userResult {
+        case .success(let user):
+            let url = baseURL.appendingPathComponent("repos/\(user.login)/\(name)")
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.setValue("application/vnd.github.v3+json", forHTTPHeaderField: "Accept")
+            
+            // Get credentials and set authorization header
+            let credentialsResult = await getCredentials()
+            switch credentialsResult {
+            case .success(let credentials):
+                request.setValue(credentials.authorizationHeader, forHTTPHeaderField: "Authorization")
+            case .failure(let error):
+                return .failure(error)
+            }
+            
+            // Make the request
+            do {
+                let (_, response) = try await urlSession.data(for: request)
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    switch httpResponse.statusCode {
+                    case 204:
+                        return .success(())
+                    case 404:
+                        return .failure(.repositoryNotFound)
+                    case 403:
+                        return .failure(.insufficientPermissions)
+                    default:
+                        let error = await handleHTTPError(response: httpResponse, data: Data())
+                        return .failure(error)
+                    }
+                }
+                
+                return .failure(.invalidResponse)
+            } catch {
+                return .failure(.networkError(error))
+            }
+            
+        case .failure(let error):
+            return .failure(error)
+        }
+    }
 
     // MARK: - Private Methods
 

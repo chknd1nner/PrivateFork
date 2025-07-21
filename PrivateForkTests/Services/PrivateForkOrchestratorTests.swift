@@ -55,7 +55,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
         case .success(let message):
             XCTAssertTrue(message.contains("Private fork created successfully"))
             XCTAssertTrue(statusUpdates.contains("Validating GitHub credentials..."))
-            XCTAssertTrue(statusUpdates.contains("Creating private repository"))
+            XCTAssertTrue(statusUpdates.contains(where: { $0.contains("Creating private repository") }))
             XCTAssertTrue(statusUpdates.contains("Cloning original repository..."))
             XCTAssertTrue(statusUpdates.contains("Configuring remotes..."))
             XCTAssertTrue(statusUpdates.contains("Pushing to private repository..."))

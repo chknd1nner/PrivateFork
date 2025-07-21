@@ -12,12 +12,14 @@ class MockGitHubService: GitHubServiceProtocol {
     var shouldFailRepositoryCreation = false
     var shouldFailRepositoryExists = false
     var shouldFailGetCurrentUser = false
+    var shouldFailRepositoryDeletion = false
 
     // Specific error scenarios
     var validationError: GitHubServiceError?
     var repositoryCreationError: GitHubServiceError?
     var repositoryExistsError: GitHubServiceError?
     var getCurrentUserError: GitHubServiceError?
+    var repositoryDeletionError: GitHubServiceError?
 
     // Rate limiting simulation
     var shouldSimulateRateLimit = false
@@ -116,6 +118,27 @@ class MockGitHubService: GitHubServiceProtocol {
 
         return .success(existingRepositories.contains(name))
     }
+    
+    func deleteRepository(name: String) async -> Result<Void, GitHubServiceError> {
+        if shouldFailRepositoryDeletion {
+            return .failure(repositoryDeletionError ?? .unexpectedError("Repository deletion failed"))
+        }
+
+        if shouldSimulateRateLimit {
+            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
+        }
+
+        // Check if repository exists
+        if !existingRepositories.contains(name) {
+            return .failure(.repositoryNotFound)
+        }
+
+        // Remove the repository
+        existingRepositories.remove(name)
+        mockRepositories.removeValue(forKey: name)
+
+        return .success(())
+    }
 
     // MARK: - Test Helper Methods
 
@@ -155,6 +178,11 @@ class MockGitHubService: GitHubServiceProtocol {
         getCurrentUserError = error
         shouldFailGetCurrentUser = true
     }
+    
+    func setRepositoryDeletionError(_ error: GitHubServiceError) {
+        repositoryDeletionError = error
+        shouldFailRepositoryDeletion = true
+    }
 
     func simulateRateLimit(retryAfter: Date? = nil) {
         shouldSimulateRateLimit = true
@@ -170,11 +198,13 @@ class MockGitHubService: GitHubServiceProtocol {
         shouldFailRepositoryCreation = false
         shouldFailRepositoryExists = false
         shouldFailGetCurrentUser = false
+        shouldFailRepositoryDeletion = false
 
         validationError = nil
         repositoryCreationError = nil
         repositoryExistsError = nil
         getCurrentUserError = nil
+        repositoryDeletionError = nil
 
         shouldSimulateRateLimit = false
         rateLimitRetryAfter = nil

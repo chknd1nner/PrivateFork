@@ -169,6 +169,10 @@ private class TestingGitHubService: GitHubServiceProtocol {
     func repositoryExists(name: String) async -> Result<Bool, GitHubServiceError> {
         return .success(false)
     }
+    
+    func deleteRepository(name: String) async -> Result<Void, GitHubServiceError> {
+        return .success(())
+    }
 }
 
 private class TestingGitService: GitServiceProtocol {

@@ -214,12 +214,17 @@ class PrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
     }
     
     private func performCleanup(privateRepo: GitHubRepository) async {
-        // TODO: Implement cleanup logic to delete the created private repository
-        // This would require adding a deleteRepository method to GitHubService
-        // For now, we log the cleanup requirement
-        print("⚠️ Cleanup required: Private repository '\(privateRepo.name)' was created but workflow failed")
-        print("   Repository URL: \(privateRepo.htmlUrl)")
-        print("   Manual cleanup may be required")
+        // Attempt to delete the created private repository
+        let deleteResult = await gitHubService.deleteRepository(name: privateRepo.name)
+        switch deleteResult {
+        case .success:
+            print("✅ Cleanup successful: Deleted repository '\(privateRepo.name)'")
+        case .failure(let error):
+            print("⚠️ Cleanup failed: Unable to delete repository '\(privateRepo.name)'")
+            print("   Error: \(error.localizedDescription)")
+            print("   Repository URL: \(privateRepo.htmlUrl)")
+            print("   Manual cleanup may be required")
+        }
     }
 }
 

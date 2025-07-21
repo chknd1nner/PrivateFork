@@ -20,4 +20,9 @@ protocol GitHubServiceProtocol {
     /// - Parameter name: Repository name to check
     /// - Returns: Result containing Boolean (true if exists) or GitHubServiceError on failure
     func repositoryExists(name: String) async -> Result<Bool, GitHubServiceError>
+    
+    /// Deletes a repository from the authenticated user's GitHub account
+    /// - Parameter name: Repository name to delete
+    /// - Returns: Result containing Void on success or GitHubServiceError on failure
+    func deleteRepository(name: String) async -> Result<Void, GitHubServiceError>
 }
