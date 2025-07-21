@@ -150,7 +150,13 @@ class PrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
             throw PrivateForkError.invalidRepositoryURL
         }
         
-        let clonePath = URL(fileURLWithPath: localPath)
+        // Extract repository name from URL and append to local path
+        guard let repoInfo = parseRepositoryURL(repositoryURL) else {
+            throw PrivateForkError.invalidRepositoryURL
+        }
+        
+        let repoDirectoryName = repoInfo.repo
+        let clonePath = URL(fileURLWithPath: localPath).appendingPathComponent(repoDirectoryName)
         
         // Provide granular status updates during clone
         statusCallback("Initializing clone operation...")
