@@ -2,212 +2,87 @@ import Foundation
 @testable import PrivateFork
 
 class MockGitHubService: GitHubServiceProtocol {
-    // Mock state
-    private var mockUser: GitHubUser?
-    private var mockRepositories: [String: GitHubRepository] = [:]
-    private var existingRepositories: Set<String> = []
-
-    // Control flags for testing different scenarios
-    var shouldFailValidation = false
-    var shouldFailRepositoryCreation = false
-    var shouldFailRepositoryExists = false
-    var shouldFailGetCurrentUser = false
-    var shouldFailRepositoryDeletion = false
-
-    // Specific error scenarios
-    var validationError: GitHubServiceError?
-    var repositoryCreationError: GitHubServiceError?
-    var repositoryExistsError: GitHubServiceError?
-    var getCurrentUserError: GitHubServiceError?
-    var repositoryDeletionError: GitHubServiceError?
-
-    // Rate limiting simulation
-    var shouldSimulateRateLimit = false
-    var rateLimitRetryAfter: Date?
+    // Result-driven properties for each protocol method
+    var validateCredentialsResult: Result<GitHubUser, GitHubServiceError>!
+    var createPrivateRepositoryResult: Result<GitHubRepository, GitHubServiceError>!
+    var getCurrentUserResult: Result<GitHubUser, GitHubServiceError>!
+    var repositoryExistsResult: Result<Bool, GitHubServiceError>!
+    var deleteRepositoryResult: Result<Void, GitHubServiceError>!
+    
+    // Call tracking for verification
+    var validateCredentialsCallCount = 0
+    var createPrivateRepositoryCallCount = 0
+    var getCurrentUserCallCount = 0
+    var repositoryExistsCallCount = 0
+    var deleteRepositoryCallCount = 0
+    
+    // Last call parameters for verification
+    var lastCreateRepositoryName: String?
+    var lastCreateRepositoryDescription: String?
+    var lastRepositoryExistsName: String?
+    var lastDeleteRepositoryName: String?
 
     // MARK: - GitHubServiceProtocol Implementation
 
     func validateCredentials() async -> Result<GitHubUser, GitHubServiceError> {
-        if shouldFailValidation {
-            return .failure(validationError ?? .authenticationFailed)
-        }
-
-        if shouldSimulateRateLimit {
-            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
-        }
-
-        guard let user = mockUser else {
-            return .failure(.authenticationFailed)
-        }
-
-        return .success(user)
+        validateCredentialsCallCount += 1
+        return validateCredentialsResult
     }
 
     func createPrivateRepository(name: String, description: String?) async -> Result<GitHubRepository, GitHubServiceError> {
-        if shouldFailRepositoryCreation {
-            return .failure(repositoryCreationError ?? .unexpectedError("Repository creation failed"))
-        }
-
-        if shouldSimulateRateLimit {
-            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
-        }
-
-        // Check if repository already exists
-        if existingRepositories.contains(name) {
-            return .failure(.repositoryNameConflict(name))
-        }
-
-        // Validate repository name
-        if name.isEmpty || name.count > 100 {
-            return .failure(.invalidRepositoryName)
-        }
-
-        // Create mock repository
-        let repository = GitHubRepository(
-            id: Int.random(in: 1...1000000),
-            name: name,
-            fullName: "\(mockUser?.login ?? "testuser")/\(name)",
-            description: description,
-            isPrivate: true,
-            htmlUrl: "https://github.com/\(mockUser?.login ?? "testuser")/\(name)",
-            cloneUrl: "https://github.com/\(mockUser?.login ?? "testuser")/\(name).git",
-            sshUrl: "git@github.com:\(mockUser?.login ?? "testuser")/\(name).git",
-            createdAt: ISO8601DateFormatter().string(from: Date()),
-            updatedAt: ISO8601DateFormatter().string(from: Date()),
-            pushedAt: ISO8601DateFormatter().string(from: Date()),
-            size: 0,
-            language: "Swift",
-            owner: GitHubOwner(
-                login: mockUser?.login ?? "testuser",
-                id: mockUser?.id ?? 12345,
-                type: "User"
-            )
-        )
-
-        // Store the repository
-        mockRepositories[name] = repository
-        existingRepositories.insert(name)
-
-        return .success(repository)
+        createPrivateRepositoryCallCount += 1
+        lastCreateRepositoryName = name
+        lastCreateRepositoryDescription = description
+        return createPrivateRepositoryResult
     }
 
     func getCurrentUser() async -> Result<GitHubUser, GitHubServiceError> {
-        if shouldFailGetCurrentUser {
-            return .failure(getCurrentUserError ?? .authenticationFailed)
-        }
-
-        if shouldSimulateRateLimit {
-            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
-        }
-
-        guard let user = mockUser else {
-            return .failure(.authenticationFailed)
-        }
-
-        return .success(user)
+        getCurrentUserCallCount += 1
+        return getCurrentUserResult
     }
 
     func repositoryExists(name: String) async -> Result<Bool, GitHubServiceError> {
-        if shouldFailRepositoryExists {
-            return .failure(repositoryExistsError ?? .networkError(NSError(domain: "MockError", code: -1)))
-        }
-
-        if shouldSimulateRateLimit {
-            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
-        }
-
-        return .success(existingRepositories.contains(name))
+        repositoryExistsCallCount += 1
+        lastRepositoryExistsName = name
+        return repositoryExistsResult
     }
     
     func deleteRepository(name: String) async -> Result<Void, GitHubServiceError> {
-        if shouldFailRepositoryDeletion {
-            return .failure(repositoryDeletionError ?? .unexpectedError("Repository deletion failed"))
-        }
-
-        if shouldSimulateRateLimit {
-            return .failure(.rateLimited(retryAfter: rateLimitRetryAfter))
-        }
-
-        // Check if repository exists
-        if !existingRepositories.contains(name) {
-            return .failure(.repositoryNotFound)
-        }
-
-        // Remove the repository
-        existingRepositories.remove(name)
-        mockRepositories.removeValue(forKey: name)
-
-        return .success(())
+        deleteRepositoryCallCount += 1
+        lastDeleteRepositoryName = name
+        return deleteRepositoryResult
     }
 
     // MARK: - Test Helper Methods
-
-    func setMockUser(_ user: GitHubUser) {
-        mockUser = user
-    }
-
-    func addExistingRepository(name: String) {
-        existingRepositories.insert(name)
-    }
-
-    func removeExistingRepository(name: String) {
-        existingRepositories.remove(name)
-    }
-
-    func clearExistingRepositories() {
-        existingRepositories.removeAll()
-        mockRepositories.removeAll()
-    }
-
-    func setValidationError(_ error: GitHubServiceError) {
-        validationError = error
-        shouldFailValidation = true
-    }
-
-    func setRepositoryCreationError(_ error: GitHubServiceError) {
-        repositoryCreationError = error
-        shouldFailRepositoryCreation = true
-    }
-
-    func setRepositoryExistsError(_ error: GitHubServiceError) {
-        repositoryExistsError = error
-        shouldFailRepositoryExists = true
-    }
-
-    func setGetCurrentUserError(_ error: GitHubServiceError) {
-        getCurrentUserError = error
-        shouldFailGetCurrentUser = true
+    
+    func resetMockState() {
+        validateCredentialsResult = nil
+        createPrivateRepositoryResult = nil
+        getCurrentUserResult = nil
+        repositoryExistsResult = nil
+        deleteRepositoryResult = nil
+        
+        validateCredentialsCallCount = 0
+        createPrivateRepositoryCallCount = 0
+        getCurrentUserCallCount = 0
+        repositoryExistsCallCount = 0
+        deleteRepositoryCallCount = 0
+        
+        lastCreateRepositoryName = nil
+        lastCreateRepositoryDescription = nil
+        lastRepositoryExistsName = nil
+        lastDeleteRepositoryName = nil
     }
     
-    func setRepositoryDeletionError(_ error: GitHubServiceError) {
-        repositoryDeletionError = error
-        shouldFailRepositoryDeletion = true
-    }
-
-    func simulateRateLimit(retryAfter: Date? = nil) {
-        shouldSimulateRateLimit = true
-        rateLimitRetryAfter = retryAfter
-    }
-
-    func resetMockState() {
-        mockUser = nil
-        mockRepositories.removeAll()
-        existingRepositories.removeAll()
-
-        shouldFailValidation = false
-        shouldFailRepositoryCreation = false
-        shouldFailRepositoryExists = false
-        shouldFailGetCurrentUser = false
-        shouldFailRepositoryDeletion = false
-
-        validationError = nil
-        repositoryCreationError = nil
-        repositoryExistsError = nil
-        getCurrentUserError = nil
-        repositoryDeletionError = nil
-
-        shouldSimulateRateLimit = false
-        rateLimitRetryAfter = nil
+    func setupSuccessResults() {
+        let mockUser = Self.defaultMockUser()
+        let mockRepository = Self.defaultMockRepository()
+        
+        validateCredentialsResult = .success(mockUser)
+        createPrivateRepositoryResult = .success(mockRepository)
+        getCurrentUserResult = .success(mockUser)
+        repositoryExistsResult = .success(false)
+        deleteRepositoryResult = .success(())
     }
 
     // MARK: - Default Mock Data
@@ -232,8 +107,27 @@ class MockGitHubService: GitHubServiceProtocol {
             )
         )
     }
-
-    func setupDefaultMockData() {
-        setMockUser(MockGitHubService.defaultMockUser())
+    
+    static func defaultMockRepository() -> GitHubRepository {
+        return GitHubRepository(
+            id: 123456,
+            name: "test-repo",
+            fullName: "testuser/test-repo",
+            description: "Test repository",
+            isPrivate: true,
+            htmlUrl: "https://github.com/testuser/test-repo",
+            cloneUrl: "https://github.com/testuser/test-repo.git",
+            sshUrl: "git@github.com:testuser/test-repo.git",
+            createdAt: ISO8601DateFormatter().string(from: Date()),
+            updatedAt: ISO8601DateFormatter().string(from: Date()),
+            pushedAt: ISO8601DateFormatter().string(from: Date()),
+            size: 0,
+            language: "Swift",
+            owner: GitHubOwner(
+                login: "testuser",
+                id: 12345,
+                type: "User"
+            )
+        )
     }
 }

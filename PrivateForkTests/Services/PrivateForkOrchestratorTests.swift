@@ -111,7 +111,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
 
     func testCreatePrivateFork_WhenGitHubValidationFails_ShouldReturnCredentialError() async {
         // Given: GitHub service configured to fail validation
-        mockGitHubService.shouldFailValidation = true
+        mockGitHubService.validateCredentialsResult = .failure(.authenticationFailed)
 
         // When: The orchestration workflow is called
         let result = await orchestrator.createPrivateFork(
@@ -133,8 +133,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
 
     func testCreatePrivateFork_WhenRepositoryCreationFails_ShouldReturnRepositoryCreationError() async {
         // Given: GitHub service configured to fail repository creation
-        mockGitHubService.shouldFailRepositoryCreation = true
-        mockGitHubService.repositoryCreationError = .repositoryNameConflict("test-repo")
+        mockGitHubService.createPrivateRepositoryResult = .failure(.repositoryNameConflict("test-repo"))
 
         // When: The orchestration workflow is called
         let result = await orchestrator.createPrivateFork(
@@ -277,21 +276,8 @@ final class PrivateForkOrchestratorTests: XCTestCase {
         // Configure keychain service for success
         mockKeychainService.setStoredCredentials(username: "testuser", token: "test-token")
         
-        // Configure GitHub service for success
-        let mockUser = GitHubUser(
-            login: "testuser",
-            id: 123,
-            name: "Test User",
-            email: "test@example.com",
-            company: nil,
-            location: nil,
-            bio: nil,
-            publicRepos: 5,
-            privateRepos: 2,
-            totalPrivateRepos: 2,
-            plan: nil
-        )
-        mockGitHubService.setMockUser(mockUser)
+        // Configure GitHub service for success using new result-driven pattern
+        mockGitHubService.setupSuccessResults()
         
         // Configure git service for success (using defaults)
         // MockGitService is already configured for success by default
