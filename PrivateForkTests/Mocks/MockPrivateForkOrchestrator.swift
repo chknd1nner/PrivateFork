@@ -2,13 +2,13 @@ import Foundation
 @testable import PrivateFork
 
 class MockPrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
-    // Mock state
-    private var successMessage: String = "Private fork created successfully!"
-    private var shouldFail = false
-    private var errorToReturn: PrivateForkError?
+    // Result-driven property for the protocol method
+    var createPrivateForkResult: Result<String, PrivateForkError>!
+    
+    // Status callback tracking for verification
     private var statusCallbacks: [String] = []
     
-    // Call tracking
+    // Call tracking for verification
     var createPrivateForkCallCount = 0
     var lastRepositoryURL: String?
     var lastLocalPath: String?
@@ -16,28 +16,27 @@ class MockPrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
     // MARK: - Test Configuration Methods
     
     func setSuccessResult(message: String = "Private fork created successfully!") {
-        shouldFail = false
-        successMessage = message
-        errorToReturn = nil
+        createPrivateForkResult = .success(message)
     }
     
     func setFailureResult(error: PrivateForkError) {
-        shouldFail = true
-        errorToReturn = error
+        createPrivateForkResult = .failure(error)
     }
     
     func getStatusCallbacks() -> [String] {
         return statusCallbacks
     }
     
-    func reset() {
+    func resetMockState() {
+        createPrivateForkResult = nil
         createPrivateForkCallCount = 0
         lastRepositoryURL = nil
         lastLocalPath = nil
         statusCallbacks.removeAll()
-        shouldFail = false
-        errorToReturn = nil
-        successMessage = "Private fork created successfully!"
+    }
+    
+    func setupSuccessResult() {
+        createPrivateForkResult = .success("Private fork created successfully!")
     }
     
     // MARK: - PrivateForkOrchestratorProtocol Implementation
@@ -56,7 +55,7 @@ class MockPrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
         let statusUpdates = [
             "Validating GitHub credentials...",
             "Creating private repository...",
-            "Cloning original repository...",
+            "Cloning original repository...", 
             "Configuring remotes...",
             "Pushing to private repository..."
         ]
@@ -69,16 +68,18 @@ class MockPrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
             try? await Task.sleep(for: .milliseconds(10))
         }
         
-        if shouldFail {
-            let error = errorToReturn ?? .workflowInterrupted("Mock failure")
-            statusCallbacks.append("Error: \(error.localizedDescription)")
-            statusCallback("Error: \(error.localizedDescription)")
+        // Return the pre-configured result
+        switch createPrivateForkResult! {
+        case .success(let message):
+            statusCallbacks.append(message)
+            statusCallback(message)
+            return .success(message)
+        case .failure(let error):
+            let errorMessage = "Error: \(error.localizedDescription)"
+            statusCallbacks.append(errorMessage)
+            statusCallback(errorMessage)
             return .failure(error)
         }
-        
-        statusCallbacks.append(successMessage)
-        statusCallback(successMessage)
-        return .success(successMessage)
     }
 }
 
@@ -88,26 +89,26 @@ extension MockPrivateForkOrchestrator {
     
     /// Convenience method to simulate credential validation failure
     func simulateCredentialValidationFailure() {
-        setFailureResult(error: .credentialValidationFailed(.itemNotFound))
+        createPrivateForkResult = .failure(.credentialValidationFailed(.itemNotFound))
     }
     
     /// Convenience method to simulate repository creation failure
     func simulateRepositoryCreationFailure() {
-        setFailureResult(error: .repositoryCreationFailed(.repositoryNameConflict("test-repo")))
+        createPrivateForkResult = .failure(.repositoryCreationFailed(.repositoryNameConflict("test-repo")))
     }
     
     /// Convenience method to simulate git operation failure
     func simulateGitOperationFailure() {
-        setFailureResult(error: .gitOperationFailed(GitServiceError.authenticationFailed))
+        createPrivateForkResult = .failure(.gitOperationFailed(GitServiceError.authenticationFailed))
     }
     
     /// Convenience method to simulate invalid repository URL
     func simulateInvalidRepositoryURL() {
-        setFailureResult(error: .invalidRepositoryURL)
+        createPrivateForkResult = .failure(.invalidRepositoryURL)
     }
     
     /// Convenience method to simulate invalid local path
     func simulateInvalidLocalPath() {
-        setFailureResult(error: .invalidLocalPath)
+        createPrivateForkResult = .failure(.invalidLocalPath)
     }
 }
