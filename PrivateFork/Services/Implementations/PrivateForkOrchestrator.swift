@@ -36,7 +36,7 @@ class PrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
             return .failure(.invalidLocalPath)
         }
         
-        let privateRepoName = "\(repoInfo.owner)-\(repoInfo.repo)-private"
+        let privateRepoName = repoInfo.repo
         var createdPrivateRepo: GitHubRepository?
         
         do {

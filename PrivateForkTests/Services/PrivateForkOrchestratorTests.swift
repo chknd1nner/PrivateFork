@@ -270,6 +270,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
         XCTAssertTrue(statusUpdates.contains { $0.contains("Pushing") })
     }
 
+
     // MARK: - Private Helper Methods
 
     private func setupSuccessScenario() {
