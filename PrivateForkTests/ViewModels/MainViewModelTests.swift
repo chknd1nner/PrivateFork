@@ -837,7 +837,7 @@ final class MainViewModelTests: XCTestCase {
     
     func testCreatePrivateFork_WhenOrchestratorSucceeds_ShouldShowSuccess() async {
         // Given
-        setupValidForkConditions()
+        await setupValidForkConditions()
         mockPrivateForkOrchestrator.setSuccessResult(message: "Test success message!")
 
         // When
@@ -853,7 +853,7 @@ final class MainViewModelTests: XCTestCase {
     
     func testCreatePrivateFork_WhenOrchestratorFails_ShouldShowError() async {
         // Given
-        setupValidForkConditions()
+        await setupValidForkConditions()
         mockPrivateForkOrchestrator.simulateCredentialValidationFailure()
 
         // When
@@ -868,7 +868,7 @@ final class MainViewModelTests: XCTestCase {
     
     func testCreatePrivateFork_ShouldReceiveStatusCallbacks() async {
         // Given
-        setupValidForkConditions()
+        await setupValidForkConditions()
         mockPrivateForkOrchestrator.setSuccessResult()
 
         var statusUpdates: [String] = []
@@ -891,14 +891,12 @@ final class MainViewModelTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func setupValidForkConditions() {
+    private func setupValidForkConditions() async {
         mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-        Task {
-            await viewModel.checkCredentialsStatus()
-            viewModel.updateRepositoryURL("https://github.com/owner/repository")
-            await Task.yield()
-            viewModel.localPath = "/Users/testuser/Documents"
-            viewModel.hasSelectedDirectory = true
-        }
+        await viewModel.checkCredentialsStatus()
+        viewModel.updateRepositoryURL("https://github.com/owner/repository")
+        await Task.yield() // Allow URL validation to complete
+        viewModel.localPath = "/Users/testuser/Documents"
+        viewModel.hasSelectedDirectory = true
     }
 }
