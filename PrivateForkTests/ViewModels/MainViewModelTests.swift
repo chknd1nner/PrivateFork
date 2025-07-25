@@ -44,11 +44,10 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.repoURL, "")
         XCTAssertFalse(viewModel.isValidURL)
         XCTAssertEqual(viewModel.urlValidationMessage, "")
-        XCTAssertFalse(viewModel.isShowingSettings)
         XCTAssertEqual(viewModel.localPath, "")
         XCTAssertFalse(viewModel.hasSelectedDirectory)
         XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured.")
     }
 
     // MARK: - URL Validation Tests
@@ -272,30 +271,6 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.urlValidationMessage, "Invalid URL format")
     }
 
-    // MARK: - Settings Tests
-
-    func testShowSettings() {
-        // Given
-        XCTAssertFalse(viewModel.isShowingSettings)
-
-        // When
-        viewModel.showSettings()
-
-        // Then
-        XCTAssertTrue(viewModel.isShowingSettings)
-    }
-
-    func testHideSettings() {
-        // Given
-        viewModel.showSettings()
-        XCTAssertTrue(viewModel.isShowingSettings)
-
-        // When
-        viewModel.hideSettings()
-
-        // Then
-        XCTAssertFalse(viewModel.isShowingSettings)
-    }
 
     // MARK: - Directory Selection Tests
 
@@ -410,7 +385,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured.")
     }
 
     func testCredentialsStatusWhenConfigured() async {
@@ -434,7 +409,7 @@ final class MainViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured.")
     }
 
     func testCredentialsStatusWhenUnexpectedError() async {
@@ -449,25 +424,6 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.credentialsStatusMessage.contains("GitHub credentials not configured"))
     }
 
-    func testHideSettingsTriggersCredentialsCheck() async {
-        // Given
-        mockKeychainService.clearStoredCredentials()
-        await viewModel.checkCredentialsStatus()
-        XCTAssertFalse(viewModel.hasCredentials)
-
-        // Configure credentials while settings are "open"
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-
-        // When
-        viewModel.hideSettings()
-
-        // Wait for credentials check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-
-        // Then
-        XCTAssertTrue(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
-    }
 
     // MARK: - UI State Management Tests
 
@@ -562,41 +518,6 @@ final class MainViewModelTests: XCTestCase {
 
     // MARK: - Real-time Updates Tests
 
-    func testCredentialsUpdateAfterSettingsChange() async {
-        // Given - Initially no credentials
-        mockKeychainService.clearStoredCredentials()
-        await viewModel.checkCredentialsStatus()
-        XCTAssertFalse(viewModel.hasCredentials)
-
-        // When - Simulate credentials being saved in settings
-        mockKeychainService.setStoredCredentials(username: "newuser", token: "newtoken")
-        viewModel.hideSettings() // This should trigger credentials recheck
-
-        // Wait for credentials check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-
-        // Then
-        XCTAssertTrue(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
-    }
-
-    func testCredentialsUpdateAfterDeletion() async {
-        // Given - Initially have credentials
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-        await viewModel.checkCredentialsStatus()
-        XCTAssertTrue(viewModel.hasCredentials)
-
-        // When - Simulate credentials being deleted in settings
-        mockKeychainService.clearStoredCredentials()
-        viewModel.hideSettings() // This should trigger credentials recheck
-
-        // Wait for credentials check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-
-        // Then
-        XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
-    }
 
     func testUIStateUpdateWhenCredentialsChange() async {
         // Given - Initially no credentials
@@ -638,57 +559,7 @@ final class MainViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasCredentials)
     }
 
-    // MARK: - Settings Sheet Dismissal Tests
 
-    func testSettingsSheetDismissalSynchronization() async {
-        // Given - Settings sheet is shown and credentials are initially not configured
-        mockKeychainService.clearStoredCredentials()
-        await viewModel.checkCredentialsStatus()
-        XCTAssertFalse(viewModel.hasCredentials)
-
-        viewModel.showSettings()
-        XCTAssertTrue(viewModel.isShowingSettings)
-
-        // When - Credentials are configured while settings are open
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-
-        // And settings sheet is dismissed (this simulates the onDismiss handler)
-        viewModel.hideSettings()
-
-        // Wait for credentials check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-
-        // Then - Credentials status should be updated and UI should be enabled
-        XCTAssertFalse(viewModel.isShowingSettings)
-        XCTAssertTrue(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
-        XCTAssertTrue(viewModel.isUIEnabled)
-    }
-
-    func testSettingsSheetDismissalWithCredentialsCleared() async {
-        // Given - Settings sheet is shown and credentials are initially configured
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
-        await viewModel.checkCredentialsStatus()
-        XCTAssertTrue(viewModel.hasCredentials)
-
-        viewModel.showSettings()
-        XCTAssertTrue(viewModel.isShowingSettings)
-
-        // When - Credentials are cleared while settings are open
-        mockKeychainService.clearStoredCredentials()
-
-        // And settings sheet is dismissed (this simulates the onDismiss handler)
-        viewModel.hideSettings()
-
-        // Wait for credentials check
-        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-
-        // Then - Credentials status should be updated and UI should be disabled
-        XCTAssertFalse(viewModel.isShowingSettings)
-        XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
-        XCTAssertFalse(viewModel.isUIEnabled)
-    }
 
     // MARK: - Status Message Tests
 
@@ -780,28 +651,30 @@ final class MainViewModelTests: XCTestCase {
         viewModel.hasSelectedDirectory = true
 
         var statusUpdates: [String] = []
-        let expectation = XCTestExpectation(description: "Status updates should occur")
+        var cancellable: AnyCancellable?
+
+        // Configure orchestrator for success - CRITICAL: This was missing!
+        mockPrivateForkOrchestrator.setSuccessResult()
 
         // Monitor status changes
-        let cancellable = viewModel.$statusMessage.sink { status in
+        cancellable = viewModel.$statusMessage.sink { status in
             statusUpdates.append(status)
-            if statusUpdates.count >= 6 { // Initial + 5 updates during fork
-                expectation.fulfill()
-            }
         }
 
         // When
         await viewModel.createPrivateFork()
+        
+        // Allow any pending async status updates to complete
+        await Task.yield()
 
-        // Then
-        await fulfillment(of: [expectation], timeout: 10.0)
-        cancellable.cancel()
+        // Then - Cancel subscription after fork completes
+        cancellable?.cancel()
 
         XCTAssertTrue(statusUpdates.contains("Preparing to create private fork..."))
-        XCTAssertTrue(statusUpdates.contains("Validating repository access..."))
-        XCTAssertTrue(statusUpdates.contains("Creating private fork..."))
-        XCTAssertTrue(statusUpdates.contains("Cloning repository..."))
-        XCTAssertTrue(statusUpdates.contains("Fork created successfully!"))
+        XCTAssertTrue(statusUpdates.contains("Validating GitHub credentials..."))
+        XCTAssertTrue(statusUpdates.contains("Creating private repository..."))
+        XCTAssertTrue(statusUpdates.contains("Cloning original repository..."))
+        XCTAssertTrue(statusUpdates.contains("Private fork created successfully!"))
         XCTAssertEqual(viewModel.statusMessage, "Ready.")
         XCTAssertFalse(viewModel.isForking)
     }

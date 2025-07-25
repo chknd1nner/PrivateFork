@@ -15,21 +15,6 @@ struct MainView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            HStack {
-                Spacer()
-                Button(action: {
-                    viewModel.showSettings()
-                }, label: {
-                    Image(systemName: "gear")
-                        .imageScale(.large)
-                })
-                .buttonStyle(PlainButtonStyle())
-                .accessibilityLabel("Settings")
-                .accessibilityHint("Open application settings")
-                .accessibilityIdentifier("settings-button")
-            }
-            .padding(.top)
-
             Text("PrivateFork")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -46,14 +31,6 @@ struct MainView: View {
                 Text(viewModel.credentialsStatusMessage)
                     .font(.caption)
                     .foregroundColor(viewModel.hasCredentials ? .green : .orange)
-
-                if !viewModel.hasCredentials {
-                    Button("Configure") {
-                        viewModel.showSettings()
-                    }
-                    .buttonStyle(.link)
-                    .font(.caption)
-                }
             }
             .padding(.horizontal)
             .padding(.vertical, 4)
@@ -181,11 +158,6 @@ struct MainView: View {
         }
         .frame(width: 500, height: 480)
         .padding()
-        .sheet(isPresented: $viewModel.isShowingSettings, onDismiss: {
-            viewModel.hideSettings()
-        }) {
-            SettingsView(keychainService: keychainService, gitHubValidationService: gitHubValidationService)
-        }
     }
 }
 

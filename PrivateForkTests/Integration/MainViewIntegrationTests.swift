@@ -99,7 +99,7 @@ final class MainViewIntegrationTests: XCTestCase {
         XCTAssertFalse(viewModel.hasCredentials)
         XCTAssertFalse(viewModel.isUIEnabled)
         XCTAssertFalse(viewModel.isCreateButtonEnabled)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured. Please configure them in Settings.")
+        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials not configured.")
     }
 
     func testUserFlowWithInvalidURL() async {
@@ -139,31 +139,6 @@ final class MainViewIntegrationTests: XCTestCase {
         XCTAssertFalse(viewModel.isCreateButtonEnabled)
     }
 
-    // MARK: - Settings Integration Tests
-
-    func testSettingsWorkflowIntegration() async {
-        // Given - Start without credentials
-        mockKeychainService.clearStoredCredentials()
-        await viewModel.checkCredentialsStatus()
-        XCTAssertFalse(viewModel.hasCredentials)
-
-        // When - Open settings
-        viewModel.showSettings()
-        XCTAssertTrue(viewModel.isShowingSettings)
-
-        // Simulate user configuring credentials in settings
-        mockKeychainService.setStoredCredentials(username: "newuser", token: "newtoken")
-
-        // And close settings
-        viewModel.hideSettings()
-        try? await Task.sleep(nanoseconds: 100_000_000) // Wait for credentials check
-
-        // Then - Credentials should be detected and UI enabled
-        XCTAssertFalse(viewModel.isShowingSettings)
-        XCTAssertTrue(viewModel.hasCredentials)
-        XCTAssertTrue(viewModel.isUIEnabled)
-        XCTAssertEqual(viewModel.credentialsStatusMessage, "GitHub credentials configured")
-    }
 
     // MARK: - State Synchronization Tests
 

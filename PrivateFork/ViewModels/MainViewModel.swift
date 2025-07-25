@@ -4,7 +4,6 @@ import AppKit
 
 @MainActor
 final class MainViewModel: ObservableObject {
-    @Published var isShowingSettings: Bool = false
     @Published var repoURL: String = ""
     @Published var isValidURL: Bool = false
     @Published var urlValidationMessage: String = ""
@@ -56,18 +55,6 @@ final class MainViewModel: ObservableObject {
         debounceInterval = interval
     }
 
-    func showSettings() {
-        isShowingSettings = true
-    }
-
-    func hideSettings() {
-        isShowingSettings = false
-
-        // Check credentials status when returning from settings
-        Task {
-            await checkCredentialsStatus()
-        }
-    }
 
     func updateRepositoryURL(_ url: String) {
         repoURL = url
@@ -225,7 +212,7 @@ final class MainViewModel: ObservableObject {
         case .failure(let error):
             hasCredentials = false
             if case .itemNotFound = error {
-                credentialsStatusMessage = "GitHub credentials not configured. Please configure them in Settings."
+                credentialsStatusMessage = "GitHub credentials not configured."
             } else {
                 credentialsStatusMessage = "Error checking credentials: \(error.localizedDescription)"
             }
