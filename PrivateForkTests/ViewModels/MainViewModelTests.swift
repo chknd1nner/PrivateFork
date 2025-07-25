@@ -667,6 +667,9 @@ final class MainViewModelTests: XCTestCase {
         // Allow any pending async status updates to complete
         await Task.yield()
 
+        // Wait for the 2-second reset delay in MainViewModel
+        try? await Task.sleep(for: .seconds(2.1))
+
         // Then - Cancel subscription after fork completes
         cancellable?.cancel()
 

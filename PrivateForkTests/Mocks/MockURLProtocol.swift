@@ -135,7 +135,11 @@ extension MockURLProtocol {
 
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        return try! encoder.encode(user)
+        do {
+            return try encoder.encode(user)
+        } catch {
+            fatalError("Failed to encode mock User object: \(error)")
+        }
     }
 
     static func mockSuccessfulRepository(name: String, description: String? = nil) -> Data {
@@ -158,7 +162,11 @@ extension MockURLProtocol {
 
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        return try! encoder.encode(repo)
+        do {
+            return try encoder.encode(repo)
+        } catch {
+            fatalError("Failed to encode mock Repository object: \(error)")
+        }
     }
 
     static func mockAPIError(message: String = "Test error") -> Data {
@@ -170,7 +178,11 @@ extension MockURLProtocol {
 
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        return try! encoder.encode(error)
+        do {
+            return try encoder.encode(error)
+        } catch {
+            fatalError("Failed to encode mock API Error object: \(error)")
+        }
     }
 
     static func mockNameConflictError(name: String) -> Data {
@@ -189,7 +201,11 @@ extension MockURLProtocol {
 
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        return try! encoder.encode(error)
+        do {
+            return try encoder.encode(error)
+        } catch {
+            fatalError("Failed to encode mock Name Conflict Error object: \(error)")
+        }
     }
 }
 
