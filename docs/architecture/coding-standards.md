@@ -7,6 +7,11 @@
 -   [cite_start]**Testing Patterns:** New tests will follow the existing testing patterns. [cite: 280]
 -   [cite_start]**Documentation Style:** New documentation will follow the existing documentation style. [cite: 281]
 
+## Automated Quality Assurance Tools
+
+-   **SwiftLint Integration:** All code must pass SwiftLint validation before commit. The tool enforces consistent Swift coding standards, identifies potential bugs, and maintains code readability across the project.
+-   **Zen Code Review Process:** Complex architectural decisions and significant code changes should leverage Zen's external LLM consultation for peer review, architectural validation, and consensus building on implementation approaches.
+
 ## Enhancement-Specific Standards
 
 -   [cite_start]**SwiftGitX:** The `SwiftGitX` library will be used for all native Git operations. [cite: 283]

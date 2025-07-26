@@ -6,6 +6,11 @@
 -   [cite_start]**Test Organization:** New tests will be organized in the same way as existing tests. [cite: 294]
 -   [cite_start]**Coverage Requirements:** The existing test coverage will be maintained or improved. [cite: 295]
 
+## Automated Testing Infrastructure
+
+-   **XCodeMCP Integration:** Build and test automation will be managed through XCodeMCP, providing consistent project discovery, build orchestration, simulator management, and test execution across development environments.
+-   **Continuous Integration Support:** XCodeMCP enables automated testing pipelines with proper device/simulator targeting, parallel test execution, and comprehensive test result reporting for both unit and integration test suites.
+
 ## New Testing Requirements
 
 ### Unit Tests for New Components
