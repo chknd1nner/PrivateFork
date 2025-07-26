@@ -127,11 +127,10 @@ struct GitHubRepositoryRequest: Codable {
 
 // MARK: - GitHub Credentials Model
 struct GitHubCredentials {
-    let username: String
-    let personalAccessToken: String
+    let oAuthToken: String
 
     var authorizationHeader: String {
-        "token \(personalAccessToken)"
+        "Bearer \(oAuthToken)"
     }
 }
 

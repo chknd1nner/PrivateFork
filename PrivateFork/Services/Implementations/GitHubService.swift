@@ -218,10 +218,10 @@ class GitHubService: GitHubServiceProtocol {
     }
 
     private func getCredentials() async -> Result<GitHubCredentials, GitHubServiceError> {
-        let result = await keychainService.retrieve()
+        let result = await keychainService.retrieveOAuthTokens()
         switch result {
-        case .success(let (username, token)):
-            return .success(GitHubCredentials(username: username, personalAccessToken: token))
+        case .success(let authToken):
+            return .success(GitHubCredentials(oAuthToken: authToken.accessToken))
         case .failure(let keychainError):
             switch keychainError {
             case .itemNotFound:

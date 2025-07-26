@@ -179,10 +179,12 @@ struct MainView: View {
 
 // MARK: - Preview Mock Services
 private class PreviewMockKeychainService: KeychainServiceProtocol {
-    func save(username: String, token: String) async -> Result<Void, KeychainError> { .success(()) }
-    func retrieve() async -> Result<(username: String, token: String), KeychainError> { .success(("preview", "token")) }
-    func delete() async -> Result<Void, KeychainError> { .success(()) }
-    func getGitHubToken() async -> Result<String, KeychainError> { .success("preview-token") }
+    func saveOAuthTokens(accessToken: String, refreshToken: String, expiresIn: Date) async -> Result<Void, KeychainError> { .success(()) }
+    func retrieveOAuthTokens() async -> Result<AuthToken, KeychainError> { 
+        let authToken = AuthToken(accessToken: "preview-token", refreshToken: "preview-refresh", expiresIn: Date().addingTimeInterval(3600))
+        return .success(authToken)
+    }
+    func deleteOAuthTokens() async -> Result<Void, KeychainError> { .success(()) }
 }
 
 private class PreviewMockOrchestrator: PrivateForkOrchestratorProtocol {

@@ -89,7 +89,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
 
     func testCreatePrivateFork_WhenCredentialValidationFails_ShouldReturnCredentialError() async {
         // Given: Keychain service configured to fail
-        mockKeychainService.shouldFailRetrieve = true
+        mockKeychainService.setRetrieveOAuthTokensFailure(.itemNotFound)
 
         // When: The orchestration workflow is called
         let result = await orchestrator.createPrivateFork(
@@ -274,7 +274,7 @@ final class PrivateForkOrchestratorTests: XCTestCase {
 
     private func setupSuccessScenario() {
         // Configure keychain service for success
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "test-token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "test-token", refreshToken: "refresh-token", expiresIn: Date().addingTimeInterval(3600))
         
         // Configure GitHub service for success using new result-driven pattern
         mockGitHubService.setupSuccessResults()

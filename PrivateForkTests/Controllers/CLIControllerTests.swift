@@ -28,7 +28,7 @@ final class CLIControllerTests: XCTestCase {
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: "/tmp/test")
         mockCLIService.parseArgumentsResult = .success(arguments)
         mockCLIService.validateArgumentsResult = .success(())
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "test-token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "test-token", refreshToken: "refresh-token", expiresIn: Date().addingTimeInterval(3600))
 
         // When: Executing CLI controller
         let exitCode = await cliController.execute(arguments: ["PrivateFork", "https://github.com/user/repo", "/tmp/test"])
@@ -87,7 +87,7 @@ final class CLIControllerTests: XCTestCase {
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: "/tmp/test")
         mockCLIService.parseArgumentsResult = .success(arguments)
         mockCLIService.validateArgumentsResult = .success(())
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
 
         // When: Executing CLI controller (argument parsing and validation only)
         let exitCode = await cliController.execute(arguments: ["PrivateFork", "https://github.com/user/repo", "/tmp/test"])
@@ -101,7 +101,7 @@ final class CLIControllerTests: XCTestCase {
         let arguments = CLIArguments(repositoryURL: "https://github.com/user/repo", localPath: "/tmp/test")
         mockCLIService.parseArgumentsResult = .success(arguments)
         mockCLIService.validateArgumentsResult = .success(())
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "", refreshToken: "refresh-token", expiresIn: Date().addingTimeInterval(3600))
 
         // When: Executing CLI controller (argument parsing and validation only)
         let exitCode = await cliController.execute(arguments: ["PrivateFork", "https://github.com/user/repo", "/tmp/test"])

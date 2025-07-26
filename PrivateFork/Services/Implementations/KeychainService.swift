@@ -2,72 +2,79 @@ import Foundation
 import Security
 
 class KeychainService: KeychainServiceProtocol {
-    private let service = "com.example.PrivateFork.github"
-    private let usernameKey = "username"
-    private let tokenKey = "token"
+    private let service = "com.example.PrivateFork.oauth"
+    private let accessTokenKey = "oauth_access_token"
+    private let refreshTokenKey = "oauth_refresh_token"
+    private let expiresInKey = "oauth_expires_in"
 
-    func save(username: String, token: String) async -> Result<Void, KeychainError> {
-        // First delete any existing items
-        _ = await delete()
+    func saveOAuthTokens(accessToken: String, refreshToken: String, expiresIn: Date) async -> Result<Void, KeychainError> {
+        // First delete any existing OAuth tokens
+        _ = await deleteOAuthTokens()
 
-        // Save username
-        let usernameResult = await saveItem(key: usernameKey, value: username.data(using: .utf8)!)
-        if case .failure(let error) = usernameResult {
+        // Save access token
+        let accessTokenResult = await saveItem(key: accessTokenKey, value: accessToken.data(using: .utf8)!)
+        if case .failure(let error) = accessTokenResult {
             return .failure(error)
         }
 
-        // Save token
-        let tokenResult = await saveItem(key: tokenKey, value: token.data(using: .utf8)!)
-        if case .failure(let error) = tokenResult {
-            // Clean up username if token save fails
-            _ = await deleteItem(key: usernameKey)
+        // Save refresh token
+        let refreshTokenResult = await saveItem(key: refreshTokenKey, value: refreshToken.data(using: .utf8)!)
+        if case .failure(let error) = refreshTokenResult {
+            // Clean up access token if refresh token save fails
+            _ = await deleteItem(key: accessTokenKey)
+            return .failure(error)
+        }
+
+        // Save expiration date
+        let expiresInData = try! JSONEncoder().encode(expiresIn)
+        let expiresInResult = await saveItem(key: expiresInKey, value: expiresInData)
+        if case .failure(let error) = expiresInResult {
+            // Clean up previous tokens if expiration save fails
+            _ = await deleteItem(key: accessTokenKey)
+            _ = await deleteItem(key: refreshTokenKey)
             return .failure(error)
         }
 
         return .success(())
     }
 
-    func retrieve() async -> Result<(username: String, token: String), KeychainError> {
-        let usernameResult = await retrieveItem(key: usernameKey)
-        let tokenResult = await retrieveItem(key: tokenKey)
+    func retrieveOAuthTokens() async -> Result<AuthToken, KeychainError> {
+        let accessTokenResult = await retrieveItem(key: accessTokenKey)
+        let refreshTokenResult = await retrieveItem(key: refreshTokenKey)
+        let expiresInResult = await retrieveItem(key: expiresInKey)
 
-        switch (usernameResult, tokenResult) {
-        case (.success(let usernameData), .success(let tokenData)):
-            guard let username = String(data: usernameData, encoding: .utf8),
-                  let token = String(data: tokenData, encoding: .utf8) else {
+        switch (accessTokenResult, refreshTokenResult, expiresInResult) {
+        case (.success(let accessTokenData), .success(let refreshTokenData), .success(let expiresInData)):
+            guard let accessToken = String(data: accessTokenData, encoding: .utf8),
+                  let refreshToken = String(data: refreshTokenData, encoding: .utf8),
+                  let expiresIn = try? JSONDecoder().decode(Date.self, from: expiresInData) else {
                 return .failure(.unexpectedData)
             }
-            return .success((username: username, token: token))
-        case (.failure(let error), _), (_, .failure(let error)):
+            let authToken = AuthToken(accessToken: accessToken, refreshToken: refreshToken, expiresIn: expiresIn)
+            return .success(authToken)
+        case (.failure(let error), _, _), (_, .failure(let error), _), (_, _, .failure(let error)):
             return .failure(error)
         }
     }
 
-    func delete() async -> Result<Void, KeychainError> {
-        let usernameResult = await deleteItem(key: usernameKey)
-        let tokenResult = await deleteItem(key: tokenKey)
+    func deleteOAuthTokens() async -> Result<Void, KeychainError> {
+        let accessTokenResult = await deleteItem(key: accessTokenKey)
+        let refreshTokenResult = await deleteItem(key: refreshTokenKey)
+        let expiresInResult = await deleteItem(key: expiresInKey)
 
         // Return success if at least one deletion succeeded or if items didn't exist
-        switch (usernameResult, tokenResult) {
-        case (.success, .success), (.success, .failure(.itemNotFound)), (.failure(.itemNotFound), .success):
+        switch (accessTokenResult, refreshTokenResult, expiresInResult) {
+        case (.success, .success, .success),
+             (.success, .success, .failure(.itemNotFound)),
+             (.success, .failure(.itemNotFound), .success),
+             (.failure(.itemNotFound), .success, .success),
+             (.success, .failure(.itemNotFound), .failure(.itemNotFound)),
+             (.failure(.itemNotFound), .success, .failure(.itemNotFound)),
+             (.failure(.itemNotFound), .failure(.itemNotFound), .success):
             return .success(())
-        case (.failure(.itemNotFound), .failure(.itemNotFound)):
+        case (.failure(.itemNotFound), .failure(.itemNotFound), .failure(.itemNotFound)):
             return .success(()) // No items to delete
-        case (.failure(let error), _), (_, .failure(let error)):
-            return .failure(error)
-        }
-    }
-
-    func getGitHubToken() async -> Result<String, KeychainError> {
-        let tokenResult = await retrieveItem(key: tokenKey)
-
-        switch tokenResult {
-        case .success(let tokenData):
-            guard let token = String(data: tokenData, encoding: .utf8) else {
-                return .failure(.unexpectedData)
-            }
-            return .success(token)
-        case .failure(let error):
+        case (.failure(let error), _, _), (_, .failure(let error), _), (_, _, .failure(let error)):
             return .failure(error)
         }
     }

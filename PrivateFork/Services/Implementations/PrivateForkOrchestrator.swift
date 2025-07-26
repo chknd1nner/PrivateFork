@@ -42,7 +42,7 @@ class PrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
         do {
             // Step 1: Validate credentials
             statusCallback("Validating GitHub credentials...")
-            let credentials = try await validateCredentials()
+            _ = try await validateCredentials()
             
             // Step 2: Create private repository
             statusCallback("Creating private repository '\(privateRepoName)'...")
@@ -115,15 +115,15 @@ class PrivateForkOrchestrator: PrivateForkOrchestratorProtocol {
     }
     
     private func validateCredentials() async throws -> GitHubCredentials {
-        let result = await keychainService.retrieve()
+        let result = await keychainService.retrieveOAuthTokens()
         switch result {
-        case .success(let (username, token)):
+        case .success(let authToken):
             // Validate credentials with GitHub API
             let validationResult = await gitHubService.validateCredentials()
             switch validationResult {
             case .success:
-                return GitHubCredentials(username: username, personalAccessToken: token)
-            case .failure(let error):
+                return GitHubCredentials(oAuthToken: authToken.accessToken)
+            case .failure(_):
                 throw PrivateForkError.credentialValidationFailed(KeychainError.unhandledError(status: -1))
             }
         case .failure(let keychainError):

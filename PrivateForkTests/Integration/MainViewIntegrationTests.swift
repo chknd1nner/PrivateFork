@@ -41,7 +41,7 @@ final class MainViewIntegrationTests: XCTestCase {
         XCTAssertEqual(viewModel.statusMessage, "Ready.")
 
         // When - Configure credentials
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Then - UI should be enabled
@@ -88,7 +88,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testUserFlowWithMissingCredentials() async {
         // Given - No credentials configured
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
         await viewModel.checkCredentialsStatus()
 
         // When - Try to enter URL and select directory
@@ -107,7 +107,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testUserFlowWithInvalidURL() async {
         // Given - Credentials configured
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // When - Enter invalid URL
@@ -127,7 +127,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testUserFlowWithoutDirectorySelection() async {
         // Given - Credentials configured and valid URL
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -158,7 +158,7 @@ final class MainViewIntegrationTests: XCTestCase {
         }.store(in: &cancellables)
 
         // When - Add credentials
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Then - UI state should update
@@ -170,7 +170,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testForkButtonStateSynchronization() async {
         // Given - Set up for fork button to be enabled
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -213,7 +213,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testStatusUpdateDuringForkOperation() async {
         // Given - Set up for fork operation
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -251,7 +251,7 @@ final class MainViewIntegrationTests: XCTestCase {
 
     func testForkOperationWhenPrerequisitesRemoved() async {
         // Given - Set up for valid fork operation
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -263,7 +263,7 @@ final class MainViewIntegrationTests: XCTestCase {
         XCTAssertTrue(viewModel.isCreateButtonEnabled)
 
         // When - Remove credentials before fork (simulate external change)
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
         await viewModel.checkCredentialsStatus()
 
         // Then - Fork button should be disabled

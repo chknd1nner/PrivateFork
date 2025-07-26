@@ -203,7 +203,7 @@ final class MainViewModel: ObservableObject {
     }
 
     func checkCredentialsStatus() async {
-        let result = await keychainService.retrieve()
+        let result = await keychainService.retrieveOAuthTokens()
 
         switch result {
         case .success:

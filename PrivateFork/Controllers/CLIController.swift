@@ -54,11 +54,11 @@ class CLIController {
     }
 
     private func validateCredentials() async throws {
-        let credentialsResult = await keychainService.getGitHubToken()
+        let credentialsResult = await keychainService.retrieveOAuthTokens()
 
         switch credentialsResult {
-        case .success(let token):
-            if token.isEmpty {
+        case .success(let authToken):
+            if authToken.accessToken.isEmpty {
                 throw CLIError.credentialsNotConfigured
             }
         case .failure:
@@ -82,11 +82,11 @@ class CLIController {
     /// Validates credentials only when actually needed for GitHub operations
     /// This method should be called before any GitHub API calls, not during startup
     private func validateCredentialsWhenNeeded() async throws {
-        let credentialsResult = await keychainService.getGitHubToken()
+        let credentialsResult = await keychainService.retrieveOAuthTokens()
 
         switch credentialsResult {
-        case .success(let token):
-            if token.isEmpty {
+        case .success(let authToken):
+            if authToken.accessToken.isEmpty {
                 throw CLIError.credentialsNotConfigured
             }
         case .failure:

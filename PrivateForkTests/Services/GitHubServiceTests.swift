@@ -37,7 +37,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testValidateCredentials_ValidCredentials_ShouldReturnUser() async {
         // Given: Valid credentials in keychain and successful API response
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -58,7 +58,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testValidateCredentials_NoCredentials_ShouldReturnCredentialsNotFound() async {
         // Given: No credentials in keychain
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
 
         // When: Validating credentials
         let result = await gitHubService.validateCredentials()
@@ -74,7 +74,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testValidateCredentials_InvalidToken_ShouldReturnAuthenticationFailed() async {
         // Given: Invalid token in keychain
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "invalid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "invalid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: Data(), statusCode: 401)
 
@@ -92,7 +92,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testValidateCredentials_RateLimited_ShouldReturnRateLimitedError() async {
         // Given: Valid credentials but rate limited response
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let headers = ["Retry-After": "1640995200"] // Unix timestamp
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: Data(), statusCode: 429, headers: headers)
@@ -117,7 +117,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_ValidName_ShouldCreateRepository() async {
         // Given: Valid credentials and repository name
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -146,7 +146,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_EmptyName_ShouldReturnInvalidRepositoryName() async {
         // Given: Empty repository name
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         // When: Creating a repository with empty name
         let result = await gitHubService.createPrivateRepository(name: "", description: nil)
@@ -162,7 +162,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_NameTooLong_ShouldReturnInvalidRepositoryName() async {
         // Given: Repository name that's too long
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         let longName = String(repeating: "a", count: 101)
 
         // When: Creating a repository with too long name
@@ -179,7 +179,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_InvalidCharacters_ShouldReturnInvalidRepositoryName() async {
         // Given: Repository name with invalid characters
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         // When: Creating a repository with invalid characters
         let result = await gitHubService.createPrivateRepository(name: "test@repo", description: nil)
@@ -195,7 +195,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_RepositoryExists_ShouldReturnNameConflict() async {
         // Given: Valid credentials and existing repository
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -222,7 +222,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_InsufficientPermissions_ShouldReturnInsufficientPermissions() async {
         // Given: Valid credentials but insufficient permissions
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "limited_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "limited_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -249,7 +249,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testGetCurrentUser_ValidCredentials_ShouldReturnUser() async {
         // Given: Valid credentials in keychain
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -271,7 +271,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testGetCurrentUser_InvalidCredentials_ShouldReturnAuthenticationFailed() async {
         // Given: Invalid credentials
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "invalid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "invalid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: Data(), statusCode: 401)
 
@@ -291,7 +291,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testRepositoryExists_RepositoryExists_ShouldReturnTrue() async {
         // Given: Valid credentials and existing repository
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -313,7 +313,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testRepositoryExists_RepositoryDoesNotExist_ShouldReturnFalse() async {
         // Given: Valid credentials and non-existing repository
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -334,7 +334,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testRepositoryExists_NetworkError_ShouldReturnNetworkError() async {
         // Given: Valid credentials but network error
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         let mockUserData = MockURLProtocol.mockSuccessfulUser()
         MockURLProtocol.setMockResponse(for: "https://api.github.com/user", data: mockUserData, statusCode: 200)
@@ -362,7 +362,7 @@ final class GitHubServiceTests: XCTestCase {
 
     func testCreatePrivateRepository_EndToEndFlow_ShouldSucceed() async {
         // Given: Complete valid setup
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "valid_token")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "valid_token", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         // Mock user endpoint
         let mockUserData = MockURLProtocol.mockSuccessfulUser()

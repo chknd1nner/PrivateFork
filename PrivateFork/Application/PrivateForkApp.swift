@@ -97,24 +97,21 @@ struct PrivateForkApp: App {
 // MARK: - Testing Services
 // Lightweight mock services for UI testing to prevent keychain dialogs
 private class TestingKeychainService: KeychainServiceProtocol {
-    func save(username: String, token: String) async -> Result<Void, KeychainError> {
+    func saveOAuthTokens(accessToken: String, refreshToken: String, expiresIn: Date) async -> Result<Void, KeychainError> {
         return .success(())
     }
     
-    func retrieve() async -> Result<(username: String, token: String), KeychainError> {
-        return .success(("testuser", "testtoken"))
+    func retrieveOAuthTokens() async -> Result<AuthToken, KeychainError> {
+        let authToken = AuthToken(
+            accessToken: "test_access_token",
+            refreshToken: "test_refresh_token",
+            expiresIn: Date().addingTimeInterval(3600)
+        )
+        return .success(authToken)
     }
     
-    func delete() async -> Result<Void, KeychainError> {
+    func deleteOAuthTokens() async -> Result<Void, KeychainError> {
         return .success(())
-    }
-    
-    func getUsername() async -> Result<String, KeychainError> {
-        return .success("testuser")
-    }
-    
-    func getGitHubToken() async -> Result<String, KeychainError> {
-        return .success("testtoken")
     }
 }
 

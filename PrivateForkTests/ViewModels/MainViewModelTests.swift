@@ -378,7 +378,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testCredentialsStatusWhenNotConfigured() async {
         // Given
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
 
         // When
         await viewModel.checkCredentialsStatus()
@@ -390,7 +390,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testCredentialsStatusWhenConfigured() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         // When
         await viewModel.checkCredentialsStatus()
@@ -429,7 +429,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsUIEnabledWhenCredentialsConfigured() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
 
         // When
         await viewModel.checkCredentialsStatus()
@@ -440,7 +440,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsUIEnabledWhenCredentialsNotConfigured() async {
         // Given
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
 
         // When
         await viewModel.checkCredentialsStatus()
@@ -451,7 +451,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsCreateButtonEnabledWhenAllConditionsMet() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Set up valid URL
@@ -468,7 +468,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsCreateButtonEnabledWhenCredentialsMissing() async {
         // Given
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
         await viewModel.checkCredentialsStatus()
 
         // Set up valid URL
@@ -485,7 +485,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsCreateButtonEnabledWhenURLInvalid() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Set up invalid URL
@@ -502,7 +502,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsCreateButtonEnabledWhenDirectoryNotSelected() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Set up valid URL
@@ -521,12 +521,12 @@ final class MainViewModelTests: XCTestCase {
 
     func testUIStateUpdateWhenCredentialsChange() async {
         // Given - Initially no credentials
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
         await viewModel.checkCredentialsStatus()
         XCTAssertFalse(viewModel.isUIEnabled)
 
         // When - Add credentials
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Then
@@ -550,7 +550,7 @@ final class MainViewModelTests: XCTestCase {
         }
 
         // When
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         // Then
@@ -573,7 +573,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testStatusMessageUpdates() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -599,7 +599,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testIsCreateButtonEnabledWhenForking() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -625,7 +625,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testCreatePrivateForkWhenNotEnabled() async {
         // Given - Button is not enabled (no credentials)
-        mockKeychainService.clearStoredCredentials()
+        mockKeychainService.clearStoredOAuthTokens()
         await viewModel.checkCredentialsStatus()
         XCTAssertFalse(viewModel.isCreateButtonEnabled)
 
@@ -641,7 +641,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testCreatePrivateForkProgressiveStatusUpdates() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -684,7 +684,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testForkButtonStateManagement() async {
         // Given
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
 
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
@@ -768,7 +768,7 @@ final class MainViewModelTests: XCTestCase {
     // MARK: - Helper Methods
     
     private func setupValidForkConditions() async {
-        mockKeychainService.setStoredCredentials(username: "testuser", token: "testtoken")
+        mockKeychainService.setStoredOAuthTokens(accessToken: "testtoken", refreshToken: "refresh_token", expiresIn: Date().addingTimeInterval(3600))
         await viewModel.checkCredentialsStatus()
         viewModel.updateRepositoryURL("https://github.com/owner/repository")
         await Task.yield() // Allow URL validation to complete

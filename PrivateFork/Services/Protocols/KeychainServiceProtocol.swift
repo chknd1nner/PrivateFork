@@ -1,13 +1,13 @@
 import Foundation
 
 protocol KeychainServiceProtocol {
-    func save(username: String, token: String) async -> Result<Void, KeychainError>
-    func retrieve() async -> Result<(username: String, token: String), KeychainError>
-    func delete() async -> Result<Void, KeychainError>
-    func getGitHubToken() async -> Result<String, KeychainError>
+    // OAuth token methods
+    func saveOAuthTokens(accessToken: String, refreshToken: String, expiresIn: Date) async -> Result<Void, KeychainError>
+    func retrieveOAuthTokens() async -> Result<AuthToken, KeychainError>
+    func deleteOAuthTokens() async -> Result<Void, KeychainError>
 }
 
-enum KeychainError: Error, LocalizedError {
+enum KeychainError: Error, LocalizedError, Equatable {
     case itemNotFound
     case duplicateItem
     case invalidData
