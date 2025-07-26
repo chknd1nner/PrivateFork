@@ -10,7 +10,7 @@ class GitHubService: GitHubServiceProtocol {
 
     // MARK: - Initialization
 
-    init(keychainService: KeychainServiceProtocol, urlSession: URLSession = .shared, baseURL: URL = URL(string: "https://api.github.com")!, clientId: String = "YOUR_GITHUB_CLIENT_ID") {
+    init(keychainService: KeychainServiceProtocol, urlSession: URLSession = .shared, baseURL: URL = URL(string: "https://api.github.com")!, clientId: String = "Ov23liJgSwc0an0X22QL") {
         self.keychainService = keychainService
         self.urlSession = urlSession
         self.baseURL = baseURL
