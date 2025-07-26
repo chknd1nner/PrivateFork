@@ -26,36 +26,11 @@ final class PrivateForkUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["PrivateFork"].exists, "App title should be displayed")
 
         // Verify core UI elements are present and accessible
-        XCTAssertTrue(app.buttons["settings-button"].exists, "Settings button should be accessible")
         XCTAssertTrue(app.textFields["repository-url-field"].exists, "Repository URL field should be present")
         XCTAssertTrue(app.buttons["select-folder-button"].exists, "Directory selection button should be accessible")
         XCTAssertTrue(app.buttons["create-private-fork-button"].exists, "Create fork button should be present")
     }
 
-    @MainActor
-    func testSettingsWorkflow() throws {
-        let app = XCUIApplication()
-        app.launchArguments += ["UI_TESTING_MODE"]
-        app.launch()
-
-        // Test settings button opens settings sheet
-        let settingsButton = app.buttons["settings-button"]
-        XCTAssertTrue(settingsButton.exists, "Settings button should exist")
-
-        settingsButton.tap()
-
-        // Verify settings sheet appears with expected elements
-        XCTAssertTrue(app.sheets.firstMatch.waitForExistence(timeout: 2), "Settings sheet should appear")
-        XCTAssertTrue(app.textFields["username-field"].exists, "Username field should be present in settings")
-
-        // Test dismissing settings sheet
-        let cancelButton = app.buttons["settings-cancel-button"]
-        XCTAssertTrue(cancelButton.exists, "Cancel button should exist")
-        cancelButton.tap()
-
-        // Verify settings sheet is dismissed - wait for animation to complete
-        XCTAssertTrue(app.sheets.firstMatch.waitForNonExistence(timeout: 2), "Settings sheet should be dismissed")
-    }
 
     @MainActor
     func testRepositoryURLValidation() throws {

@@ -7,12 +7,14 @@ final class MainViewIntegrationTests: XCTestCase {
 
     var viewModel: MainViewModel!
     var mockKeychainService: MockKeychainService!
+    var mockOrchestrator: MockPrivateForkOrchestrator!
     var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
         mockKeychainService = MockKeychainService()
-        let mockOrchestrator = MockPrivateForkOrchestrator()
+        mockOrchestrator = MockPrivateForkOrchestrator()
+        mockOrchestrator.setSuccessResult()
         viewModel = MainViewModel(
             keychainService: mockKeychainService,
             privateForkOrchestrator: mockOrchestrator
@@ -24,6 +26,7 @@ final class MainViewIntegrationTests: XCTestCase {
         cancellables.removeAll()
         viewModel = nil
         mockKeychainService = nil
+        mockOrchestrator = nil
         super.tearDown()
     }
 
