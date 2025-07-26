@@ -1,5 +1,85 @@
 import Foundation
 
+// MARK: - GitHub Device Flow Models
+
+// MARK: Request Models (Encodable)
+
+/// Request body for initiating GitHub OAuth device flow
+struct GitHubDeviceCodeRequest: Encodable {
+    let clientId: String
+    let scope: String
+    
+    enum CodingKeys: String, CodingKey {
+        case clientId = "client_id"
+        case scope
+    }
+}
+
+/// Request body for polling GitHub OAuth device flow token endpoint
+struct GitHubTokenPollingRequest: Encodable {
+    let clientId: String
+    let deviceCode: String
+    let grantType: String
+    
+    enum CodingKeys: String, CodingKey {
+        case clientId = "client_id"
+        case deviceCode = "device_code"
+        case grantType = "grant_type"
+    }
+    
+    init(clientId: String, deviceCode: String) {
+        self.clientId = clientId
+        self.deviceCode = deviceCode
+        self.grantType = "urn:ietf:params:oauth:grant-type:device_code"
+    }
+}
+
+// MARK: Response Models (Decodable)
+
+/// Response from GitHub device code initiation endpoint
+struct GitHubDeviceCodeResponse: Codable {
+    let deviceCode: String
+    let userCode: String
+    let verificationUri: String
+    let expiresIn: Int
+    let interval: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case deviceCode = "device_code"
+        case userCode = "user_code"
+        case verificationUri = "verification_uri"
+        case expiresIn = "expires_in"
+        case interval
+    }
+}
+
+/// Response from successful GitHub OAuth token exchange
+struct GitHubAccessTokenResponse: Codable {
+    let accessToken: String
+    let tokenType: String
+    let scope: String
+    
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case tokenType = "token_type"
+        case scope
+    }
+}
+
+/// Error response from GitHub OAuth device flow token polling
+struct GitHubTokenPollingErrorResponse: Codable {
+    let error: String
+    let errorDescription: String?
+    let errorUri: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case error
+        case errorDescription = "error_description"
+        case errorUri = "error_uri"
+    }
+}
+
+
 // MARK: - GitHub User Model
 struct GitHubUser: Codable {
     let login: String
@@ -148,6 +228,15 @@ enum GitHubServiceError: Error, LocalizedError, Equatable {
     case invalidRepositoryName
     case apiError(GitHubAPIError)
     case unexpectedError(String)
+    
+    // MARK: - Device Flow Specific Errors
+    case deviceFlowInitiationFailed
+    case deviceFlowAuthorizationPending
+    case deviceFlowSlowDown
+    case deviceFlowExpired
+    case deviceFlowAccessDenied
+    case deviceFlowPollingTimeout
+    case deviceFlowUnexpectedResponse
 
     var errorDescription: String? {
         switch self {
@@ -176,6 +265,22 @@ enum GitHubServiceError: Error, LocalizedError, Equatable {
             return "GitHub API error: \(apiError.message)"
         case .unexpectedError(let message):
             return "Unexpected error: \(message)"
+        
+        // MARK: - Device Flow Error Descriptions
+        case .deviceFlowInitiationFailed:
+            return "Failed to initiate GitHub device flow authentication"
+        case .deviceFlowAuthorizationPending:
+            return "GitHub device flow authorization is still pending"
+        case .deviceFlowSlowDown:
+            return "Device flow polling rate limit exceeded"
+        case .deviceFlowExpired:
+            return "GitHub device flow session has expired"
+        case .deviceFlowAccessDenied:
+            return "User denied access during GitHub device flow"
+        case .deviceFlowPollingTimeout:
+            return "GitHub device flow polling timed out"
+        case .deviceFlowUnexpectedResponse:
+            return "Unexpected response from GitHub device flow API"
         }
     }
 
@@ -189,7 +294,14 @@ enum GitHubServiceError: Error, LocalizedError, Equatable {
              (.insufficientPermissions, .insufficientPermissions),
              (.invalidResponse, .invalidResponse),
              (.repositoryNotFound, .repositoryNotFound),
-             (.invalidRepositoryName, .invalidRepositoryName):
+             (.invalidRepositoryName, .invalidRepositoryName),
+             (.deviceFlowInitiationFailed, .deviceFlowInitiationFailed),
+             (.deviceFlowAuthorizationPending, .deviceFlowAuthorizationPending),
+             (.deviceFlowSlowDown, .deviceFlowSlowDown),
+             (.deviceFlowExpired, .deviceFlowExpired),
+             (.deviceFlowAccessDenied, .deviceFlowAccessDenied),
+             (.deviceFlowPollingTimeout, .deviceFlowPollingTimeout),
+             (.deviceFlowUnexpectedResponse, .deviceFlowUnexpectedResponse):
             return true
         case (.repositoryNameConflict(let name1), .repositoryNameConflict(let name2)):
             return name1 == name2
@@ -207,3 +319,4 @@ enum GitHubServiceError: Error, LocalizedError, Equatable {
         }
     }
 }
+

@@ -25,4 +25,18 @@ protocol GitHubServiceProtocol {
     /// - Parameter name: Repository name to delete
     /// - Returns: Result containing Void on success or GitHubServiceError on failure
     func deleteRepository(name: String) async -> Result<Void, GitHubServiceError>
+    
+    // MARK: - OAuth Device Flow Methods
+    
+    /// Initiates the GitHub OAuth 2.0 device flow
+    /// - Returns: A result containing device flow response data on success or GitHubServiceError on failure
+    func initiateDeviceFlow() async -> Result<GitHubDeviceCodeResponse, GitHubServiceError>
+    
+    /// Polls the GitHub OAuth token endpoint for device flow completion
+    /// - Parameters:
+    ///   - deviceCode: The device code from initiation response
+    ///   - interval: Polling interval in seconds
+    ///   - expiresIn: Expiration time in seconds
+    /// - Returns: A result containing success or GitHubServiceError on failure
+    func pollForAccessToken(deviceCode: String, interval: Int, expiresIn: Int) async -> Result<Void, GitHubServiceError>
 }

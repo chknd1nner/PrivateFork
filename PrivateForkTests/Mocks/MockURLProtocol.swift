@@ -207,6 +207,58 @@ extension MockURLProtocol {
             fatalError("Failed to encode mock Name Conflict Error object: \(error)")
         }
     }
+    
+    // MARK: - Device Flow Mock Helpers
+    
+    static func mockDeviceCodeResponse(deviceCode: String = "test_device_code", userCode: String = "TEST-1234") -> Data {
+        let response = GitHubDeviceCodeResponse(
+            deviceCode: deviceCode,
+            userCode: userCode,
+            verificationUri: "https://github.com/login/device",
+            expiresIn: 900,
+            interval: 5
+        )
+        
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        do {
+            return try encoder.encode(response)
+        } catch {
+            fatalError("Failed to encode mock DeviceCodeResponse object: \(error)")
+        }
+    }
+    
+    static func mockAccessTokenResponse(accessToken: String = "test_access_token") -> Data {
+        let response = GitHubAccessTokenResponse(
+            accessToken: accessToken,
+            tokenType: "bearer",
+            scope: "repo user"
+        )
+        
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        do {
+            return try encoder.encode(response)
+        } catch {
+            fatalError("Failed to encode mock AccessTokenResponse object: \(error)")
+        }
+    }
+    
+    static func mockDeviceFlowError(_ errorType: String, description: String? = nil) -> Data {
+        let response = GitHubTokenPollingErrorResponse(
+            error: errorType,
+            errorDescription: description,
+            errorUri: nil
+        )
+        
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        do {
+            return try encoder.encode(response)
+        } catch {
+            fatalError("Failed to encode mock DeviceFlowError object: \(error)")
+        }
+    }
 }
 
 // MARK: - Test Configuration Helper

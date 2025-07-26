@@ -2,8 +2,22 @@ import Foundation
 import Security
 
 actor KeychainService: KeychainServiceProtocol {
-    private let service = "com.example.PrivateFork.oauth"
-    private let tokenKey = "oauth_tokens"
+    
+    // MARK: - Constants
+    
+    private enum KeychainConstants {
+        static let service = "com.example.PrivateFork.oauth"
+        static let tokenKey = "oauth_tokens"
+        
+        enum Legacy {
+            static let service = "com.example.PrivateFork.github"
+            static let usernameKey = "username"
+            static let tokenKey = "token"
+        }
+    }
+    
+    private let service = KeychainConstants.service
+    private let tokenKey = KeychainConstants.tokenKey
 
     func saveOAuthTokens(accessToken: String, refreshToken: String, expiresIn: Date) async -> Result<Void, KeychainError> {
         // Create AuthToken struct and encode as single atomic data
@@ -142,13 +156,12 @@ actor KeychainService: KeychainServiceProtocol {
     /// Performs one-time cleanup of legacy PAT credentials
     /// This is a fire-and-forget operation for security hygiene
     private func cleanupLegacyPATCredentials() async {
-        let legacyService = "com.example.PrivateFork.github"
-        let legacyKeys = ["username", "token"]
+        let legacyKeys = [KeychainConstants.Legacy.usernameKey, KeychainConstants.Legacy.tokenKey]
         
         for key in legacyKeys {
             let query: [String: Any] = [
                 kSecClass as String: kSecClassGenericPassword,
-                kSecAttrService as String: legacyService,
+                kSecAttrService as String: KeychainConstants.Legacy.service,
                 kSecAttrAccount as String: key
             ]
             

@@ -1,16 +1,29 @@
 import Foundation
+import OAuthSwift
 
 class GitHubService: GitHubServiceProtocol {
     private let keychainService: KeychainServiceProtocol
     private let urlSession: URLSession
     private let baseURL: URL
+    private let oauthswift: OAuth2Swift
+    private let clientId: String
 
     // MARK: - Initialization
 
-    init(keychainService: KeychainServiceProtocol, urlSession: URLSession = .shared, baseURL: URL = URL(string: "https://api.github.com")!) {
+    init(keychainService: KeychainServiceProtocol, urlSession: URLSession = .shared, baseURL: URL = URL(string: "https://api.github.com")!, clientId: String = "YOUR_GITHUB_CLIENT_ID") {
         self.keychainService = keychainService
         self.urlSession = urlSession
         self.baseURL = baseURL
+        self.clientId = clientId
+        
+        // Configure OAuthSwift for GitHub (for general OAuth functionality)
+        self.oauthswift = OAuth2Swift(
+            consumerKey: clientId,
+            consumerSecret: "", // Device flow for public clients must not use a secret
+            authorizeUrl: "https://github.com/login/oauth/authorize",
+            accessTokenUrl: "https://github.com/login/oauth/access_token",
+            responseType: "code"
+        )
     }
 
     // MARK: - Public Methods
@@ -149,6 +162,148 @@ class GitHubService: GitHubServiceProtocol {
         case .failure(let error):
             return .failure(error)
         }
+    }
+
+    // MARK: - OAuth Device Flow Methods
+    
+    /// Initiates the GitHub OAuth 2.0 device flow
+    /// - Returns: A result containing device flow response data on success or GitHubServiceError on failure
+    func initiateDeviceFlow() async -> Result<GitHubDeviceCodeResponse, GitHubServiceError> {
+        let deviceCodeURL = "https://github.com/login/device/code"
+        
+        guard let url = URL(string: deviceCodeURL) else {
+            return .failure(.deviceFlowInitiationFailed)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let requestBody = GitHubDeviceCodeRequest(clientId: clientId, scope: "repo user")
+        
+        do {
+            let encoder = JSONEncoder()
+            request.httpBody = try encoder.encode(requestBody)
+        } catch {
+            return .failure(.deviceFlowInitiationFailed)
+        }
+        
+        do {
+            let (data, response) = try await urlSession.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                return .failure(.deviceFlowInitiationFailed)
+            }
+            
+            guard httpResponse.statusCode == 200 else {
+                return .failure(.deviceFlowInitiationFailed)
+            }
+            
+            let decoder = JSONDecoder()
+            let deviceResponse = try decoder.decode(GitHubDeviceCodeResponse.self, from: data)
+            return .success(deviceResponse)
+            
+        } catch {
+            return .failure(.deviceFlowInitiationFailed)
+        }
+    }
+    
+    /// Polls the GitHub OAuth token endpoint for device flow completion
+    /// - Parameters:
+    ///   - deviceCode: The device code from initiation response
+    ///   - interval: Polling interval in seconds
+    ///   - expiresIn: Expiration time in seconds
+    /// - Returns: A result containing success or GitHubServiceError on failure
+    func pollForAccessToken(deviceCode: String, interval: Int, expiresIn: Int) async -> Result<Void, GitHubServiceError> {
+        let tokenURL = "https://github.com/login/oauth/access_token"
+        let startTime = Date()
+        var pollingInterval = TimeInterval(interval)
+        
+        guard let url = URL(string: tokenURL) else {
+            return .failure(.deviceFlowUnexpectedResponse)
+        }
+        
+        while Date().timeIntervalSince(startTime) < TimeInterval(expiresIn) {
+            // Wait for the specified interval before making the next request
+            try? await Task.sleep(nanoseconds: UInt64(pollingInterval * 1_000_000_000))
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            let requestBody = GitHubTokenPollingRequest(clientId: clientId, deviceCode: deviceCode)
+            
+            do {
+                let encoder = JSONEncoder()
+                request.httpBody = try encoder.encode(requestBody)
+            } catch {
+                return .failure(.deviceFlowUnexpectedResponse)
+            }
+            
+            do {
+                let (data, response) = try await urlSession.data(for: request)
+                let decoder = JSONDecoder()
+                
+                // First, try to decode a success response
+                if let httpResponse = response as? HTTPURLResponse,
+                   httpResponse.statusCode == 200,
+                   let tokenResponse = try? decoder.decode(GitHubAccessTokenResponse.self, from: data) {
+                    
+                    // Success! Store the token and inject it into OAuthSwift
+                    let authToken = AuthToken(
+                        accessToken: tokenResponse.accessToken,
+                        refreshToken: "", // GitHub device flow doesn't provide refresh tokens
+                        expiresIn: Date(timeIntervalSinceNow: TimeInterval(8 * 3600)) // GitHub tokens expire in 8 hours
+                    )
+                    
+                    // Save to keychain
+                    let saveResult = await keychainService.saveOAuthTokens(
+                        accessToken: authToken.accessToken,
+                        refreshToken: authToken.refreshToken,
+                        expiresIn: authToken.expiresIn
+                    )
+                    
+                    switch saveResult {
+                    case .success:
+                        // Inject token into OAuthSwift for future API calls
+                        oauthswift.client.credential.oauthToken = tokenResponse.accessToken
+                        oauthswift.client.credential.oauthRefreshToken = ""
+                        oauthswift.client.credential.oauthTokenExpiresAt = authToken.expiresIn
+                        return .success(())
+                    case .failure:
+                        return .failure(.unexpectedError("Failed to save OAuth tokens to keychain"))
+                    }
+                }
+                
+                // If that fails, try to decode a known error response
+                if let errorResponse = try? decoder.decode(GitHubTokenPollingErrorResponse.self, from: data) {
+                    switch errorResponse.error {
+                    case "authorization_pending":
+                        continue // This is expected, keep polling
+                    case "slow_down":
+                        pollingInterval += 5.0 // Increase interval and keep polling
+                        continue
+                    case "expired_token":
+                        return .failure(.deviceFlowExpired)
+                    case "access_denied":
+                        return .failure(.deviceFlowAccessDenied)
+                    default:
+                        return .failure(.deviceFlowUnexpectedResponse)
+                    }
+                }
+                
+                // If neither success nor a known error could be decoded, the response is unexpected
+                return .failure(.deviceFlowUnexpectedResponse)
+                
+            } catch {
+                return .failure(.networkError(error))
+            }
+        }
+        
+        // If the while loop finishes, it means the expires_in time was exceeded
+        return .failure(.deviceFlowPollingTimeout)
     }
 
     // MARK: - Private Methods

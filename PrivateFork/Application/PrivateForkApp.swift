@@ -170,6 +170,21 @@ private class TestingGitHubService: GitHubServiceProtocol {
     func deleteRepository(name: String) async -> Result<Void, GitHubServiceError> {
         return .success(())
     }
+    
+    func initiateDeviceFlow() async -> Result<GitHubDeviceCodeResponse, GitHubServiceError> {
+        let deviceResponse = GitHubDeviceCodeResponse(
+            deviceCode: "test_device_code",
+            userCode: "TEST-CODE",
+            verificationUri: "https://github.com/login/device",
+            expiresIn: 900,
+            interval: 5
+        )
+        return .success(deviceResponse)
+    }
+    
+    func pollForAccessToken(deviceCode: String, interval: Int, expiresIn: Int) async -> Result<Void, GitHubServiceError> {
+        return .success(())
+    }
 }
 
 private class TestingGitService: GitServiceProtocol {
