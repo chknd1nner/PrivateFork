@@ -402,7 +402,7 @@ final class MainViewModelTests: XCTestCase {
 
     func testCredentialsStatusWhenKeychainError() async {
         // Given
-        mockKeychainService.shouldFailRetrieve = true
+        mockKeychainService.setRetrieveOAuthTokensFailure(.itemNotFound)
 
         // When
         await viewModel.checkCredentialsStatus()
@@ -414,14 +414,14 @@ final class MainViewModelTests: XCTestCase {
 
     func testCredentialsStatusWhenUnexpectedError() async {
         // Given
-        mockKeychainService.shouldFailRetrieve = true
+        mockKeychainService.setRetrieveOAuthTokensFailure(.unhandledError(status: -25291))
 
         // When
         await viewModel.checkCredentialsStatus()
 
         // Then
         XCTAssertFalse(viewModel.hasCredentials)
-        XCTAssertTrue(viewModel.credentialsStatusMessage.contains("GitHub credentials not configured"))
+        XCTAssertTrue(viewModel.credentialsStatusMessage.contains("Error checking credentials"))
     }
 
 

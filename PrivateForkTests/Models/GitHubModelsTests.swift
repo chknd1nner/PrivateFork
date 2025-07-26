@@ -334,17 +334,14 @@ final class GitHubModelsTests: XCTestCase {
     // MARK: - GitHubCredentials Tests
 
     func testGitHubCredentials_AuthorizationHeader_ShouldFormatCorrectly() {
-        // Given: GitHub credentials
-        let credentials = GitHubCredentials(
-            username: "testuser",
-            personalAccessToken: "test_token_123"
-        )
+        // Given: GitHub credentials with OAuth token
+        let credentials = GitHubCredentials(oAuthToken: "oauth_token_123")
 
         // When: Getting authorization header
         let authHeader = credentials.authorizationHeader
 
-        // Then: Should format correctly
-        XCTAssertEqual(authHeader, "token test_token_123")
+        // Then: Should format correctly as Bearer token
+        XCTAssertEqual(authHeader, "Bearer oauth_token_123")
     }
 
     // MARK: - GitHubServiceError Tests
